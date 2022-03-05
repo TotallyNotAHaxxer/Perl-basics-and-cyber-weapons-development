@@ -51,3 +51,47 @@ Some sources for the perl programming language are as follows
 - Module files : https://perldoc.perl.org/perlmodstyle
 - Libraries    : https://metacpan.org/pod/module::name
 ( replace module::name with something like Net::Server or the library name )
+
+
+# the basics of the perl programming language 
+
+Get ready to experience programming on drugs XDDD
+
+> Running perl files
+
+```pl
+perl filename.pl
+```
+> Installing third party perl modules
+
+```pl
+sudo cpan install module::name
+```
+
+example
+
+```pl
+sudo cpan install Getopt::Std;
+```
+
+sudo is not needed but it will ask you what you want like for it to be installed via root, or no root, or other type premissions
+
+> Writing some begginer level programs to understand how perl works
+
+Perl is a wacky language, however lets start by making some example programs, i personally feel the best way to experience how a language works is by working with the basics, not just hello world but http servers, making url requests, using third party libraries, writing and outputting files etc so in this section we will be writing 5+ scripts to get you familiar with perl 
+
+before we start writing im going to be giving you a small sheet of some simple perl functions or statements in a table 
+
+| Function |                                  Description                                 |              Usage / Syntax                    |
+| -------- | ---------------------------------------------------------------------------- | ---------------------------------------------- |
+| print""; | Will output a statement to the standard I/O ( Input Output )                 | print "something";                             |
+| my       | My declares a public variable                                                | my $varname = "something"                      |
+| sub      | Sub declares the start of a subroutine                                       | sub subroutinename()                           |
+| use      | Standard import function for libraries                                       | use module::name                               |
+| $_       | The default input and pattern-searching space                                | print $_;                                      |
+| or       | The defualt or statement in perl                                             | or die $!;                                     |
+| die      | kill the current function/script and write a message to a user               | die "some error message to write to the IO"    |
+| $!       | Standard error message or what went wrong                                    | or die (Error -> $!)                           |
+| say      | Say is a feature which eliminates the use for the \n at th end of print"";   | say "name random things";                      |
+| @        | initates an array                                                            | @name($value,);                                |
+
