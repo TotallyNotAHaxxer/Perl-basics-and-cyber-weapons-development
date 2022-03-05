@@ -95,3 +95,59 @@ before we start writing im going to be giving you a small sheet of some simple p
 | say      | Say is a feature which eliminates the use for the \n at th end of print"";   | say "name random things";                      |
 | @        | initates an array                                                            | @name($value,);                                |
 
+there are much more but i will go into that later, now lets start to write our script 
+
+so to first start off we will be using perls for loops to infinitely count inside of a for loop, this will be called under a subroutine to also get you familiar with how the functions work
+
+```pl
+#! /usr/bin/perl
+
+# useage of the perl shabang
+use strict;
+# using strict, a library to help you write secure code, basically stops you from using 
+# functions or operators that can behave weirdly inside of a perl script
+
+my @s = qw/ something, something2, something3, something4, something5, d, d, r, rg, gd, g, ghg, g, rg, rg, drg, drg / ;
+my $count = 0 ;
+#The qw operator is used to extract each element of the given string as it is in an array of elements in single-quote
+# the @s defines an array
+# using MY to declare a public variable which is visible to all classes 
+
+# use the sub function to define main as a subroutine
+sub main {
+    {
+        # define the for loop, foreach is foreach in range of $e in the array @s
+        foreach my $e(@s)
+        {
+            # for every , will count as 1, if they are not seperated it will not count
+            print "Number -> ", $count++, " Holds letter -> $e\n"  ;
+                                # count++ for every strig   #$e defines the character, or string inside of the array
+        }
+    }
+}
+
+main();
+# call the main function
+```
+
+this should be easy to understand given the notes, the summary would be we decalre a array by using the `@`, then use the `QW` operator which will split every string, char, int, etc etc in that array seperated like `something, something2` etc, then declares a foreach, for every `$e ( every word ) in the array (@s)` it will use the `++ variable` to count `count++` to add how much letters there are in the array or phrases, then outputs it. `$e` will be the letter it is at, which produces the folloing output 
+
+```pl
+Number -> 0 Holds letter -> something,
+Number -> 1 Holds letter -> something2,
+Number -> 2 Holds letter -> something3,
+Number -> 3 Holds letter -> something4,
+Number -> 4 Holds letter -> something5,
+Number -> 5 Holds letter -> d,
+Number -> 6 Holds letter -> d,
+Number -> 7 Holds letter -> r,
+Number -> 8 Holds letter -> rg,
+Number -> 9 Holds letter -> gd,
+Number -> 10 Holds letter -> g,
+Number -> 11 Holds letter -> ghg,
+Number -> 12 Holds letter -> g,
+Number -> 13 Holds letter -> rg,
+Number -> 14 Holds letter -> rg,
+Number -> 15 Holds letter -> drg,
+Number -> 16 Holds letter -> drg
+```
