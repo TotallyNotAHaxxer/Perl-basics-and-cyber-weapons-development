@@ -202,3 +202,194 @@ Number -> 14 Holds letter -> rg,
 Number -> 15 Holds letter -> drg,
 Number -> 16 Holds letter -> drg
 ```
+
+now we are going to write a program which takes one input, the input is a filename of URL's, we will use a combination of perls standard operators and libs to itterate through the file, and test the connection to all URL's, i will not do what i did above in fact i will walk you through it. first things first is to plan out how our program will work, what we will do and how we will make this work without glitches, and actually structure our program well
+
+so lets start, the structure will be as follows 
+
+```
+shabang
+  | Imports 
+       | declaring the private variables
+                           | Subroutine
+                                 | declare the STDIN for user input
+                                                     | open the file
+                                                              | itterate over every URL in that file  
+                                                                                     | make and call a main subroutine
+                             
+```
+
+lets start with the basics and declare our libs, functions, clients etc 
+for this script we will be using 3 libs, 2 are standard and the other one is called HTTP::Tiny, this bascially is a http client which makes it easier than making a net::http request, if you get the error 
+
+```
+Can't locate HTTP/Tinydfggdfdfg.pm in @INC (you may need to install the HTTP::Tiny module) (@INC contains: /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.32.1 /usr/local/share/perl/5.32.1 /usr/lib/x86_64-linux-gnu/perl5/5.32 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl-base /usr/lib/x86_64-linux-gnu/perl/5.32 /usr/share/perl/5.32 /usr/local/lib/site_perl) at url_test.pl line 4.
+BEGIN failed--compilation aborted at url_test.pl line 4.
+```
+
+then you can run the following command to install the module 
+
+`sudo cpan instakk HTTP::Tiny`
+
+now lets move onto the actuall script, we will also be using the use feature statement to usr the output statement say 
+
+```pl
+#!/usr/bin/perl
+use strict;
+use warnings;
+use HTTP::Tinydfggdfdfg;
+use feature 'say';
+
+
+# make the http client
+my $Client = HTTP::Tiny->new();
+
+print "Enter a filename of URL's -> ";
+my $file = <STDIN>;
+chomp $file;
+print "[+] Using file -> ", $file, "\n";
+```
+
+simple part to understand, we import the files, use the shabang to declare it is perl, then we move onto adding the http tiny client which is defined as a private variable $Client, then we move onto using STDIN as a user input, when we dcalre file as STDN with MY it becomes a public variable, which means that any class, module, subroutine, function, for loop, array etc etc can see this variable if it lies within the same script
+
+so the next part will be declaring the sub rotuine to open a file, and append all the url's into that list into an array, then finally test them via response code which is done below 
+
+first create the subroutine to open the file and read it 
+
+```pl
+sub main {
+  if (-e $file) {
+     print "\n[+] File => $file exists\n";
+        # since this means it did check, lets open the file
+     open(F, '<'. $file) or die $!;
+        # use the open function to open the file 
+        # now use the while function to loop over every line in that file
+      while(<F>) {
+            # <F> defines the filename which was defined in the open function and <> includes it 
+            # intialize a URL array 
+            my @urls = ($_,);
+      }
+      
+      
+  } else {
+    print "[-] File does not exist";
+    exit 1;
+  }
+  
+}
+```
+
+few things to go over 
+
+first we declare our main function and we use a standard file stat command or argument to check if the file exists which is -e, i like perl for that reason because it is like fortran where it has a very easy and standard file checking, file stat, etc thats built in and does not need modules to do so. the next thing we do if it exists is open the file using the `open`, if you have no read fortran has something to identify files called units, perl follows the same idea accept with names 
+
+you declare a certian file to open as `<variablename>` in this case its `<F>` we use this with the open and while statement like this 
+  
+```pl
+open(F, '<', 'filename' 
+while(<F>) {}
+```
+
+the while statement uses the files unit decleration to identify what file it will be using in the case there is multiple files 
+
+then we push it into our array, all the contents of the file line by line under the while loop are defined as
+
+```pl
+my @urls (
+  $_, 
+);
+```
+
+this is then called with a for loop 
+
+```pl
+for my $url (@urls) {
+  print "\n\n"
+  print "testing URL -> $url in file : $file\n";
+  # make the get request with the client
+  my $response = $Client->get($url);
+  # now check the response
+  if($url, $response->{status} == 200){
+      print "URL -> $url came back with code 200 connection GOOD\n"
+  }
+
+  # lets try one lining our if statement
+  elsif($url, $response->{status} == 307) {
+      say "\n[ INFO ] DATA: WARN: im not sure about this response stat if its good or bad?";
+  }
+  # we will get the following warnings from strict
+  #Useless use of private variable in void context at url_test.pl line 45.
+  #Useless use of private variable in void context at url_test.pl line 47.
+  # however this is not needed to be fixed as of right now
+}
+}
+```
+
+this is our entire script 
+
+```pl
+#!/usr/bin/perl
+use strict;
+use warnings;
+use HTTP::Tinydfggdfdfg;
+use feature 'say';
+
+
+# make the http client
+my $Client = HTTP::Tiny->new();
+
+print "Enter a filename of URL's -> ";
+my $file = <STDIN>;
+chomp $file;
+print "[+] Using file -> ", $file, "\n";
+
+sub check_filename {
+    # -e means check if the file exists 
+    if (-e $file) {
+        print "\n[+] File => $file exists\n";
+        # since this means it did check, lets open the file
+        open(F, '<'. $file) or die $!;
+        # use the open function to open the file 
+        # now use the while function to loop over every line in that file
+        while(<F>) {
+            # <F> defines the filename which was defined in the open function and <> includes it 
+            # intialize a URL array 
+            my @urls = (
+                $_,  # this is basically a for loop in a symbol, for every line in that file a new URL will be pushed to that array
+            );
+            #
+            # itterate over the Array which was created for URLs as url
+            for my $url (@urls) {
+                # test them
+                print "\n\n"; 
+                # 
+                print "testing URL -> $url in file : $file\n";
+                # make the get request with the client
+                my $response = $Client->get($url);
+                # now check the response
+                if($url, $response->{status} == 200){
+                    print "URL -> $url came back with code 200 connection GOOD\n"
+                }
+
+                # lets try one lining our if statement
+                elsif($url, $response->{status} == 307) {
+                    say "\n[ INFO ] DATA: WARN: im not sure about this response stat if its good or bad?";
+                }
+                # we will get the following warnings from strict
+                #Useless use of private variable in void context at url_test.pl line 45.
+                #Useless use of private variable in void context at url_test.pl line 47.
+                # however this is not needed to be fixed as of right now
+            }
+
+        }
+
+    } else {
+        print "[-] File => $file does not exist\n";
+        exit 1; 
+    }
+}
+
+check_filename()
+```
+
+the check filename prints the output of the subroutine or in a better case calls it, this script is easy to understand, given all there was left was to explain the $response uses the http client
