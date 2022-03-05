@@ -33,3 +33,21 @@ Perl designed for mainly web applications would specialize best in web exploitat
 - .PM this is the standard Perl Module file, what you will use to write and define your own modules in and for perl these normally are not executed as perl file.pm they are rather imported into other perl files and ran that way, however if you wanted to run an example perl module you could use
  
 - .t which is the testing module file which perl will use to run module tests which are usually used to test if modules work on other peoples machines and if not it will throw the report out and attempt to install the module or thing that was missing from that file if it was structured that way 
+
+
+# Starting out with perl, warnings, usages, and how this language could help 
+
+While this language is not in use anymore it can definitely help you understand and explore different syntaxes and how other languages work. In this sengment i will be giving you some warnings before diving into the language such as help and other things which can make this language easy to learn, as well as some things and concepts i missed with perl.  
+
+> Where to get help with perl5
+
+So in todays time like fortran not many people program in perl anymore, in fact its kinda getting phased out if you are not a legacy developer for other people or other companies, this means that help is very rare ( and i wish i knew that before going into the language ), there will be alot of books still out there however some are rare and others are just not the best of knowlege given they most likely apply to perl3 or the first version of perl. When i first started this language i did not know properly where to go for help, given i knew only a few people who were good at perl and even then i could not talk to them all the time. This pushed me away from the language and made me hate it, the more i hated it the more i got used to it given my entire weaponry and SQL database i had setup was managed by this language. Some tips to know about this language before taking a full dive into it is that it is a weird and hard language to get into if you have not had any previous experience with languages like PHP, its syntax personally i do not like and many will gladly agree with me, however you eventually find the language useful in many other cases so you choose to deal with it.
+
+Some sources for the perl programming language are as follows 
+
+- Fixing errors: Stackoverflow
+- Documentation: https://perldoc.perl.org/
+- CPAN         : https://www.cpan.org/doc/index.html
+- Module files : https://perldoc.perl.org/perlmodstyle
+- Libraries    : https://metacpan.org/pod/module::name
+( replace module::name with something like Net::Server or the library name )
