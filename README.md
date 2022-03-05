@@ -95,6 +95,57 @@ before we start writing im going to be giving you a small sheet of some simple p
 | say      | Say is a feature which eliminates the use for the \n at th end of print"";   | say "name random things";                      |
 | @        | initates an array                                                            | @name($value,);                                |
 
+> Additional operators in perl 
+
+| push()
+
+the `push()` operator  is used to append an element to the end of an array, kinda the same as .append() in other languages 
+its syntax is as follows 
+
+```pl
+my @array_name
+push(@array_name, 'variable, element, etc');
+push(@array_name, ('you', 'can', 'also', 'append', 'multiple', 'values', 'like', 'this'))
+```
+
+if you want to push multiple values you must have a () encapsulating the variables, if you are just appending only one variable then () is not needed an example of non encapsulation is at the top, and encapsulation at the bottom, notice the difference?
+
+> Boolean logic
+
+<h5> Mathematical </h5>
+
+|    Operator   | Description of its usage and what it does                                                                           |
+| ------------- | ------------------------------------------------------------------------------------------------------------------- |
+|      =        | Assigns a variable to a value                                                                                       |
+|     ==        | test if a variable is equal to a value, can not be used in checking string statements ex if ($varname == $varname2) |
+|      !        | defines NOT, something like != can be used in a statement like if (!$var) {print "hello world";}                    |
+|     eq        | checks if a string is equal to another variable, is used usually as a replacement for eq                            |
+|      >        | Is greater than                                                                                                     |
+|      <        | defines a variable as less than                                                                                     |
+|      gt       | checks if a string or variable is greater than another, ex: $c = $a gt $b                                           |
+|      it       | checks if a string or variable is LESS than another same syntax as GT                                               |
+|      >=       | Greater than or equal to                                                                                            |
+|      <=       | Less than or equal to                                                                                               |
+|      gte      | greater than or equal to                                                                                            |
+|      lte      | less than or equal to, kinda like eq is to == but instead with >= is gte and <= lte                                 |
+|      ~        | Often used with regular expressions, is often used as the perl binding operator to bind or compile regex ( sense )  | 
+|      !~       | Does not equal with regex                                                                                           |
+|      =~       | equal with regex                                                                                                    |
+
+- we will use these later on keep this table in mind 
+
+<h5>Statements</h5>
+
+|    Operator   | Description of its usage and what it does                                                                           |
+| ------------- | ------------------------------------------------------------------------------------------------------------------- |
+|      if       | Checks if a value is eq, not eq, false, true, etc etc or equal to something syntax if (condition == second) {code}  |
+|    unless     | represents elif or something like elif unless ($variable >= 900) {do something}                                     |
+|     AND OR    | can be represented as &&, and, ||, or is used like if (var < 1 && var2 < 1) {code}                                  |
+|    golfing    | Not an operator but a term,  applies to condensing a boolean statement into one line print"\n" unless ($age >= 18); |                           |     for       | represents a continuous loop, for something = 0; something < something                                              |
+|   foreach     | defines a for loop which is usually used to itterate over lists or large outputs                                    |
+|   STDIN       | Standard input syntax <> example: print"enter something"; my $something = <>;                                       |
+ 
+
 there are much more but i will go into that later, now lets start to write our script 
 
 so to first start off we will be using perls for loops to infinitely count inside of a for loop, this will be called under a subroutine to also get you familiar with how the functions work
