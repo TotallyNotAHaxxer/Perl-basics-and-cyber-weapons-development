@@ -1050,4 +1050,41 @@ sub oui_lookup {
 }
 ```
 
-<h5>This section is still in progress come back by the end of tommorow and see whats new</h5>
+# Exploring the relms of wifi cyber weapons with perl 
+
+Since our last script we made and explained was pointing to the networking pentesting section lets dive deeper into this section then end with the web exploitation usages, the more i go on the more i think this repo will have more than 5 scripts? given how long they will be.
+
+In this next section we will be making a host identification script which will arp for internet protocal addresses which are curently alive with the choice of four methods, one is ICMP, the second is syn, the third is udp, and the finale one will be tcp. Sometimes working with different methods will cause a target to respond quicker, and become apparent on our side that the host on that network is alive, i have found that ICMP on my network is the best method for host ping and identification since this is better for communication between the router and the devices on that network.
+
+Now to start this script we will be using a new method to create code notes or script usages if the user does not input a certian field or required item for this script known as code command paragraphs, these can be used to create help menu's, help sides, script synopsis, lists, or command line arguments in perl, here is the following table of how these work before the tables is a list of example paragraphs that can be used with CCP ( Code Command Paragraphs )
+
+<h5>Ordinay</h5>
+
+```
+Most paragraphs in your documentation will be ordinary blocks of text, like this one. You can simply type in your text without any markup whatsoever, and with just a blank line before and after. When it gets formatted, it will undergo minimal formatting, like being rewrapped, probably put into a proportionally spaced font, and maybe even justified.
+```
+
+<h5>Verbatim</h5>
+
+```
+Verbatim paragraphs are usually used for presenting a codeblock or other text which does not require any special parsing or formatting, and which shouldn't be wrapped.
+
+A verbatim paragraph is distinguished by having its first character be a space or a tab. (And commonly, all its lines begin with spaces and/or tabs.) It should be reproduced exactly, with tabs assumed to be on 8-column boundaries. There are no special formatting codes, so you can't italicize or anything like that. A \ means \, and nothing else.
+```
+
+
+| Command starter and header |          Description and synopsis          |
+| -------------------------- | ------------------------------------------ |
+|          =pod              |                   =pod                     | 
+|          =head1            |             =head1 Heading Text            |
+|          =head2            |             =head2 Heading Text            |
+|          =head3            |             =head3 Heading Text            |
+|          =head4            |             =head4 Heading Text            |
+|           =over            |             =over indentlevel              |
+|           =item            |             =item stuff                    |
+|           =back            |                  =back                     |
+|           =begin           |             =begin format                  |
+|           =end             |             =end format                    |
+|            =for            |             =for format text...            |
+|            =encoding       |             =encoding type                 |
+|            =cut            |                  =cut                      |
