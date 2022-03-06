@@ -78,7 +78,7 @@ sudo is not needed but it will ask you what you want like for it to be installed
 
 > Writing some begginer level programs to understand how perl works
 
-Perl is a wacky language, however lets start by making some example programs, i personally feel the best way to experience how a language works is by working with the basics, not just hello world but http servers, making url requests, using third party libraries, writing and outputting files etc so in this section we will be writing 5+ scripts to get you familiar with perl 
+Perl is a wacky language, however lets start by making some example programs, i personally feel the best way to experience how a language works is by working with the basics, not just hello world but http servers, making url requests, using third party libraries, writing and outputting files etc, in this section which will sum up the entire paper, we will be writing some interesting tools and cyber weapons to get you familiar with how perl operates, and how easy it is to work with once you get the hang of it 
 
 before we start writing im going to be giving you a small sheet of some simple perl functions or statements in a table 
 
@@ -396,6 +396,297 @@ the check filename prints the output of the subroutine or in a better case calls
 
 this was pretty shown out.
 
-the next program we will be making is getting used to the third party perl library GETOPT, GETOPT is a third party argument/flag program which allows you to set exactly what type of options to specify, this library is good because flags in general are nice, since they allow the user to know what input should come first or what input comes last, as well as keeps the script data that is needed organized. so to spice up the meaning to this repo `Cybersecurity with perl` we will write a simple program 
+Lets advance more into using command line flags with perl scripts using the GETOPT library to help us interact more with our programs 
+
+> why is flags usually better than OSV ( OS Argument Vectors )
+
+There is alot of reasons as to why they are better than using command line vectors, this is because of something as much as command or run organization, better parsing, and formatting. When you write a program that is huge and requries alot of arguments, best be sure you are using flags, sometimes flags can leave a command input alot easier on the person using the program, if you were yo have a program that took 4 arguments, one .out file one .in file one .dat file and one .exe file what do you think is alot easier on the person 
+
+`perl file.pl name.out name.dat name.exe name.in`
+
+or
+
+`perl file.pl -d name.dat -o log.out -i in.in -e main.exe`
+
+we all will have our personal preference but i think non physcopaths would say using flags is alot more better not just for devs but for section organization as well, not only that but they provide a better easy to read description, which makes them an essentail part of any large cyberweapon you use like SQLMAP
+
+
+in the next example we will be writing a CPANEL brute forcing utility tool which works based off of arguments, and explors perls wild side by working with wordlists and operating to verify addresses and port names with regex, time to get fucking mathematicsl
+
+the first thing like any normal program and as above that we want to do will be organize what will be in the script, what goes first what goes last what functions are called what libs are used, so here is a small list of how this program will be constructed 
+
+<h5> List </h5>
+
+- Using following modules | 
+```
+      use IO::Socket;
+      use LWP::Simple;
+      use feature 'say';
+      use MIME::Base64;
+      use Getopt::Std;
+```
+
+- Function types 
+```
+    regex checker to verify that the ip address, and port are REAL and not fake numbers like sfuyfshjkghuidfsghu or 4.34564/56/4645 etc 
+    one to verify the data the user inputted through the flags 
+    a function to set the header and run the brute forcing function
+    
+```
+
+- Arguments we will take 
+```
+        -h, -u, -p,   -l                       -f
+      Host user port  file of save passwords   brute forcing list 
+```
+
+This program seems hard however it will be rather simple to construct, first lets start with the file header by defining and setting the public variables
+
+```pl
+use IO::Socket;
+use LWP::Simple;
+use feature 'say';
+use MIME::Base64;
+use Getopt::Std;
+# check if the hosts port is open
+
+
+my %opts = (
+    a  => '',                   
+    w => '',
+);
+
+# h = Host address 
+# u = UserName 
+# p = Port
+# l = password list 
+# f = file for save passwords
+getopt('h:u:p:l:f:', \%opts);
+
+
+@months = qw( Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec );
+@days = qw(Sun Mon Tue Wed Thu Fri Sat Sun);
+$host     = $opts{h};
+$user     = $opts{u};
+$port     = $opts{p};
+$list     = $opts{l};
+$file     = $opts{f};
+$url = "http://".$host.":".$port;
+
+if($host, $user, $port, $list eq ""){
+
+    print q(
+        |-------------------------------------------------------------|
+        |       Hm looks like Argument < 3 (list) was not specified   |
+        #-------------------------------------------------------------#
+        #    [Host] : victim Host             (simorgh-ev.com)        #
+        #    [User] : User Name               (demo)                  #
+        #    [PORT] : Port of Cpanel          (2082)                  #
+        #    [list] : File Of password list   (list.txt)              #
+        #    [File] : file for save password  (password.txt)          #
+        #                                                             #
+        ###############################################################
+);
+exit();
+}
+```
+
+
+this will be our settings section, aka the top power or front power of the script, first lets look at how the STD GETOPT library works, so when we want to inmitalize our values as a flag we need to define the use of the GETOPT lib 
+
+```pl
+use Getopt::Std;
+```
+
+then we decalre the options as opts 
+
+```pl
+my %opts = (
+    a  => '',                   
+    w => '',
+);
+```
+
+note that a => etc are just if the user did not input it what the base value will be, this was used as a test if you do want you can remove these with no affect unless you have a defualt wordlist you want to use 
+
+then we define the list of variables we want to parse with the GETOPT lib
+
+```pl
+# h = Host address 
+# u = UserName 
+# p = Port
+# l = password list 
+# f = file for save passwords
+getopt('h:u:p:l:f:', \%opts);
+$host     = $opts{h};
+$user     = $opts{u};
+$port     = $opts{p};
+$list     = $opts{l};
+$file     = $opts{f};
+```
+
+the `$` as we know assigns a variable name to a type or a structure, then we use the `$opts{character}` to parse the objects in order tod eclare it as a flag it MUST be defined in the `getopt('') ` function, this also can not be set as words or the getopt library will interpret it as you are making all of them variables 
+
+if you do so 
+
+```
+getopt('hello', \%opts); would then become => opts{h} opts{e} opts{l} etc etc....
+```
+
+which will mess up the program you are writing so remmeber to seperate them or if you want to mash them together but do not try to make one flag a whole phrase or word, again the above part will show or be interpretted as so.
+
+then we set the arguments which is deifned here 
+
+```pl
+$host     = $opts{h};
+$user     = $opts{u};
+$port     = $opts{p};
+$list     = $opts{l};
+$file     = $opts{f};
+```
+
+as you can see we have it defined easily and very very organized, host is h, user is u , port is p, list is l file is f
+
+now we need to build the function to checkl if these values were inputted by the user, but if the port number and the ip address are real numbers, to do this we will make the following function 
+
+```pl
+if($host, $user, $port, $list eq ""){
+
+    print q(
+        |-------------------------------------------------------------|
+        |       Hm looks like Argument < 3 (list) was not specified   |
+        #-------------------------------------------------------------#
+        #    [Host] : victim Host             (simorgh-ev.com)        #
+        #    [User] : User Name               (demo)                  #
+        #    [PORT] : Port of Cpanel          (2082)                  #
+        #    [list] : File Of password list   (list.txt)              #
+        #    [File] : file for save password  (password.txt)          #
+        #                                                             #
+        ###############################################################
+);
+exit();
+}
+```
+
+this function checks if the arguments exist, if not it uses the q in the print statement to print a ASCII warning banner, Q is basically like 
+
+```python
+print("""
+fhnjvlxcfghkbhjknfghbjkfghjkjfgh
+fg'h'
+fgh]fgyh-o560-y9459068y8905678056780957u89080679067906
+
+""")
+```
+in python 
+
+nopw lets start with the body of the file, this will be the core functions before we reach the EOF ( end of file ) where we will call all the functions and run everything from then ( technically no function is called at the end but thats where the attack function ends so- )
+
+in the body we will do two things, itterate over a password file, verify a port is open, and verify a port is real and not fake same as the IP address that was given to us, to do this we will use regex to build the following function 
+
+```pl
+# check if the IP and port is REAL
+sub ip_check()
+{
+  my $ip = "$host:$port";
+  my $regex = "/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5})/";
+  if($ip =~ /(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5})/)
+  {
+      print "\n[*] Address matches with RE string -> $1\n";
+      print "\n[*] Setting: Target port -> $ip\n"
+  } else {
+      say "\033[31m[!] WARN: FATAL: Tested $ip with regex $regex just for it to come back";
+      say "\033[31m[!] WARN: False, this address is not real must be char";
+      exit();
+  }
+}
+```
+
+so simple this is, we define the subroutine as a ip_check which holds no values asides the public variables we declared during our header of the file, we have one regex string which looks for `ip:port`, if the IP and port match up to the regex string then it becomes or returns correct if else the user will be forced to re run the script with a correct format 
+
+> why regex?
+
+Regex is a good function to use to verify if strings or integers or names etc match up to a certian string or in our case number that was given by the user, because of how reliable and fast regex is it allows us to properly verify certian addresses and can verify other stuff like password length, word length etc it is just a good overall system to impliment into your scripts and programs as security features to prevent stuff like buffer overflows or security vulnerabilities in the program
+
+the regex to verify a address and port in the format 
+
+```pl
+my $ip = "$host:$port";
+```
+
+is as follows 
+
+`/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5})/`
+
+now when we talked about the =~ sign and how it is used with regex this is essentially just compiling the regex and checking is the IP string is equal to that regex forumla, if it is then is passes on if else it warns the user and exits, we also have a second function that exists with regex we need to make to verify that the port number is a REAL number and not a FLOAT, or a subset, string, character or dimension to do this we will run the following function or use the following function in our script 
+
+```pl
+sub check_port() {
+    my $regex = "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])";
+    if($port =~ "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])") {
+        print "[*] Port matches to regex  -> $regex\n";
+        print "[*] Setting: Port Verified ->  $port\n";
+    } else {
+        say "\033[31m[!] WARN: FATAL: ERR: EXIT -> Reason?\n";
+        say "[!] $port failed to match regex string \n";
+        say "[!] $regex\n";
+    }
+}
+```
+
+there is not much to do with the regex function here since you already or should already understand what it does, takes the port regex validation string and if it matches up to the port the user inputted or the format then it will continue on if else then it will fail and continue on. the real test comes when we choose to tell or try and make a connection to the port, a cool thing about perl as said before is it is extremely easy to program sockets in this language and make other connections really quickly, so next we will make a function to check if the port is open using the IO::SOCKET module 
+
+```pl
+# start port check
+# flushing buffer 
+$| = 1;
+# this will check for the port of the host, if it is open conitnue if 
+# it comes back false then exit and say user may have wrong 
+# port on $host during try of $url
+sub port_scanner_slash_check() {
+    $socket = IO::Socket::INET->new(
+        Proto => tcp,
+        PeerAddr => $host,
+        PeerPort => $port,
+    );
+    if($@) {
+        print "\033[31mFailed to connect on port $port using host $host\033[39m\n"
+    } else {
+        print "\033[32m[*] Setting: Port is open -> $port Con made on host -> $url\n"
+    }
+
+}
+```
+
+this is like the others a fairly easy function to understand, we use the $| format which is basically a I/O flusher, and then start the subroutine names port_scanner_slash_check, to see if the port is open 
+
+we define $socket and call it with 
+
+```pl
+IO::Socket::INET->new(); 
+```
+
+then add the aditional arguments 
+
+```pl
+        Proto => tcp,
+        PeerAddr => $host,
+        PeerPort => $port,
+```
+
+the proto defines the protocal which is tcp, the peer address or addr will be the host we will try to connect to, and the peer port is the port we want to try and connect to, if you do not know already as said above the `=>` is not a greater than or less than function and rather acts as a =, where it just says that peer address is equal to this value here in this place and organization 
+
+once we create the function and create a new INET socket we can now check to see if the port came back true or false 
+
+```pl
+    if($@) {
+        print "\033[31mFailed to connect on port $port using host $host\033[39m\n"
+    } else {
+        print "\033[32m[*] Setting: Port is open -> $port Con made on host -> $url\n"
+    }
+```
+
+the $@ is kinda confusing but its a evalulation or EVAL statement and decleration, this means by using the eval statement `	The Perl syntax error message from the last eval command.` that there was an error connecting to the host, when we use the $@ it kinda works as or die accept a bit better and is more commonly used with other modules and interfaces, if the $@ is not present then this means we made a sucessful connection on that host and port which means the port is open
+
 
 
