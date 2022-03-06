@@ -909,3 +909,145 @@ sub brute() {
     } 
 }
 ```
+
+<h5> Writing your own OUI identification utility tool to identify the vendor of an OUI </h5>
+
+> What is an OUI
+
+An OUI or a Organizational Unique Identifier is the hardware or physical address of a device, aka the MAC, it works in the same way. however instead of identifying the device it identifies the devices manufacture and chipset, which can sometimes be very very helpful in exploitation
+
+> How can finding the OUI aid in exploitation
+
+Finding the OUI can help in the case you want to exploit a certian device where the chipset or device manufacture has released a flaw in their systems out to the public but has not yet patched it, sometimes some companies will let users know there are bugs and security vulnerabilities in the device, and if people do not update their devices and you find their OUI is an older moldel, then you can specify an exploit to just that device 
+
+> Why choose perl
+
+In order to do this properly we will be itterating over a list which has a line count of 132 thousand and 131 lines of just pure hex values and vendor strings, perl is a great language for data typing like R is when running throughn or parsing through really large lists or files
+
+> Building the tool 
+
+This tool will not require much however, if you want to keep it updated and really build off of this it will take a little bit more understadning which we will get to later, i will teach you how to improove perl scripts like this and make them better than what their original code is. 
+
+So the first thing to do is declare out header as always which you know by now, or should anyway. we will be using two libraries that are standard in perl, warnings and strict because of the amount of parsing we will be doing, we do not want our output to format weirdly or bug out and cause security issues ( which strict helps is by preventing us from having the ability to impliment dangerous features into the code as said far up )
+
+if you come from any programming background in OOP languages or even some compiled languages you will underastand this code easily we will start by defining our header which looks like this 
+
+```pl
+use strict;
+use warnings;
+
+my $target_mac = shift or die "Usage\n\t./id_target \n";
+
+printf "Address: %s, MAC Manufacturer: %s\n", $target_mac, oui_lookup($target_mac);
+```
+
+now before i go onto the main function and subroutine, i will first start by declaring why printf, alot of people dont use printf because its just a not so secure statement in languages like C, or FORTRAN in the case of binaries, however printf is one of the few formating statements you have in perl5, i believe raku has alot more statements but today this entire section is the newest version of perl which is perl5 ( despite raku being a revision of perl5 first called perl6 perl6 was renamed to RAKU due to the massive changes, which made them completely different languages )
+
+printf in this case is best because we can format the subroutine with the print statement and also format the output, like the target mac is declared first and formatted with %s same as the MAC manufacturement statemement but just redirected to the format at the end or the second %s 
+
+there is one thing new here and that is the shift statement which we have not practiced or talked about, the shift function of perl is quite literally i think one of the best inline functions ive come accross, while it has a very weird synopsis or syntax to it, it can become handy in many moments like this one, `returns the first value in an array, removing it and shifting the elements of the array list to the left by one` this acts alot like its native function POP however instead of taking out the last value of an array it takes the first value, so our shift here defined in our my target mac statement is shifting the OS arguments from 0 to 1 so we can properly pick up the OS or command line arguments, now if we try to make a list with this perl will completely ignore it which is another cool attribute to the shift function 
+
+now moving onto the main function ( for reference the OUI list is named out.txt in this repo )
+
+our main function OUI lookup
+
+```pl
+sub oui_lookup {
+  my $mac_address = shift;
+  $mac_address =~ s/:/-/g;
+  my $oui = substr $mac_address, 0, 8;
+
+  open (my $oui_file, '<', 'info_files/out.txt') or die $!;
+  while (my $line = <$oui_file>)
+  {
+    if($line =~ /$oui/i)
+    {
+      my ($address, $manufacturer_name) = split /\t+/, $line;
+      return "$manufacturer_name";
+      last;
+    }
+  }
+  return "Unknown";
+}
+```
+
+to a smaller perl dev this looks scary i get it it kinda is but its easy i promis XD, now when we start the function we start again by using the shift method to define our mac address or mac target we want to find the vendor of, then we define $mac_Address =~ and some random shit, well thats actually not just random characters that is how you define a substring with a global regex pattern 
+
+so when we move past the =~ or `Perl binding operator` we start with `s` and end with `g` `g` stands for global and `s` stands for  start as an example then in between the / / is our regex string the syntax is as follows 
+
+```pl
+$string =~ s/regex/replacement/g;
+```
+
+the `-` is our replacement value and `:` is our regex string
+
+this will be how we find the vendor and match it up to the file 
+
+when we move past this we see a open function which is defined as follows 
+
+```pl
+open (my $oui_file, '<', 'info_files/out.txt') or die $!;
+while (my $line = <$oui_file>)
+```
+
+now this is simple to understand, another cool thing about the usage of my is the factor you can define them anywhere and they are seen by any class or function or sub routine or out body scripts, you can define a variable as my in write, print, sub, while, for, range, arrays, etc statements even logical statements and still use them in other functions without having that one subroutine to return or require a value upon calling it, so we take advantage of this by definint the OUI file as a file in the filepath 'info_files/out.txt' which is prepared or opened in read mode `<` once done we tell perl if an error happens then die `or die $!` and output with the standard error as to what happened
+
+then we call the while loop 
+
+which is then passed into a boolean logical statement 
+
+```pl 
+  while (my $line = <$oui_file>)
+  {
+    if($line =~ /$oui/i)
+    {
+      my ($address, $manufacturer_name) = split /\t+/, $line;
+      return "$manufacturer_name";
+      last;
+    }
+  }
+  return "Unknown";
+```
+
+this part here will define line as the oui file, then split the OUI file into a regex pattern, finally binding it. once the script is done using the bind operator it defines the my $address and $manufacturename as a file falue, which is = to a split statement, it will split each line in the file and replace it with the regex pattern until it matches the correct value of the vendor, if it itterates through the entire list of mac nodes and addresses and finds something it will output with something like 
+
+`Address: FC:58:FF:33:65:4A, MAC Manufacturer: Shen Zhen Shi Xin Zhong Xin Technology Co.,Ltd.`
+
+if it does not it will return 
+
+`Address: ff:ff:ff:ff:ff, MAC Manufacturer: Unknown`
+
+now you have sucessfully built your own script to itterate through the list of manufacture assignments and find the brand or MANUFACTURER of a certian device by its MAC address.
+
+the script should now look like this 
+
+```pl
+# OUI lookup for mac addresses
+use strict;
+use warnings;
+
+my $target_mac = shift or die "Usage\n\t./id_target \n";
+
+printf "Address: %s, MAC Manufacturer: %s\n",
+  $target_mac, oui_lookup($target_mac);
+
+sub oui_lookup {
+  my $mac_address = shift;
+  $mac_address =~ s/:/-/g;
+  my $oui = substr $mac_address, 0, 8;
+
+  open (my $oui_file, '<', 'path/to/oui/out.txt') or die $!;
+  while (my $line = <$oui_file>)
+  {
+    if($line =~ /$oui/i)
+    {
+      my ($address, $manufacturer_name) = split /\t+/, $line;
+      return "$manufacturer_name";
+      last;
+    }
+  }
+  return "Unknown";
+}
+```
+
+<h5>This section is still in progress come back by the end of tommorow and see whats new</h5>
