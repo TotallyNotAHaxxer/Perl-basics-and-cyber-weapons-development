@@ -392,4 +392,10 @@ sub check_filename {
 check_filename()
 ```
 
-the check filename prints the output of the subroutine or in a better case calls it, this script is easy to understand, given all there was left was to explain the $response uses the http client
+the check filename prints the output of the subroutine or in a better case calls it, this script is easy to understand, given all there was left was to explain the $response uses the http client as we have seen this is a very entry level program, personally i always feel hello world programs and what not can be a waste of time, sometimes its better to mash the variable names together after studying parts of that language, i can see where they come in handy but sometimes if you make mor advanced entry level programs it gets the person more used to the language.
+
+this was pretty shown out.
+
+the next program we will be making is getting used to the third party perl library GETOPT, GETOPT is a third party argument/flag program which allows you to set exactly what type of options to specify, this library is good because flags in general are nice, since they allow the user to know what input should come first or what input comes last, as well as keeps the script data that is needed organized. so to spice up the meaning to this repo `Cybersecurity with perl` we will write a simple program 
+
+
