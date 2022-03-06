@@ -1088,3 +1088,229 @@ A verbatim paragraph is distinguished by having its first character be a space o
 |            =for            |             =for format text...            |
 |            =encoding       |             =encoding type                 |
 |            =cut            |                  =cut                      |
+
+
+```
+To explain them each in detail:
+=head1 Heading Text
+=head2 Heading Text
+=head3 Heading Text
+=head4 Heading Text
+Head1 through head4 produce headings, head1 being the highest level. 
+The text in the rest of this paragraph is the content of the heading. For example:
+```
+
+see more at POD ( Plain Old Documentation ) at the offical perl docs -> https://perldoc.perl.org/perlpod#:~:text=Head1%20through%20head4%20produce%20headings,Attributes%22%20comprises%20the%20heading%20there.
+
+Now before we start out script lets layout a description and head, now this has changed a bit since we will be using the =head etc tags to declare script synopsis and =cut tags to end the notes, and will be using newer methods. So here is our general script layout and summary 
+
+
+<h5>Our script summary looks like this</h5>
+
+```
+This script will be a script to ping hosts and return the ones that responded back to the terminal, at an example range -> 10.0.0.1/24 
+
+the range is pushed into arguments, we will not specify variables and make those out as argument flags but rather be using the shift argument to shift once into the vector then shift a second time specifying a secondary argument for the type or method to use ICMP, TCP, SYN, UDP
+
+to do this we will be using the Net::Ping and the Net::NetMask and the POSIX library
+```
+
+<h5>Script layout</h5>
+
+```
+Shabang
+    | Use of =cut, =head tags and script usages
+                          | our push arguments
+                                      | Creating a new scan range or start netmask
+                                                      | Main function
+                                                              | end 
+```
+
+So lets start out with the header 
+
+```pl
+#!/usr/bin/env perl
+
+=head1 DOCUMENTATION 
+  ping.pl <CIDR> method timeout
+
+Methods:
+  icmp, udp, tcp, syn
+
+Examples:
+  sudo perl ping.pl 10.0.0.1/24 icmp 10
+  sudo perl ping.pl 10.0.0.0/24 tcp  3
+=cut
+
+
+use strict;
+use warnings;
+use Net::Ping;
+use Net::Netmask;
+use POSIX 'WNOHANG';
+
+die "Usage:\n\tsudo perl $0 CIDR, method, \n" unless @ARGV;
+my $netmask = Net::Netmask->new2(shift) or die Net::Netmask::errstr;
+```
+
+The first thing we note will be the `=head1 DOCUMENTATION`
+
+then the `=cut`
+
+so these you can think of as inline documentation or perls way of defining code notes that are not just one line as said above, so when we use this and someone needs a better direction other than the simple help output which is listed here 
+
+```pl
+die "Usage:\n\tsudo perl $0 CIDR, method, \n" unless @ARGV;
+```
+
+Now when we make these PODS or section in the code perl will not call it or see it as code but again as said above rather code notes now when we make the new netmask and call `NeT::Netmask->new2(shift)` we are calling the first argument which will be `ARGV[1]` ( ARGUMENT VECTOR #1 ) which is the first case or argument we use or in the scripts case the `CIDR`
+
+the next part will be out main function or where the magic happens, to make this main function we need ro create a for loop which will constantly enumerate the netmask or range, and until it reaches the end of that CIDR it will not stop. then once done finding the hosts that are alive output them to the terminal and state them as live 
+
+```pl
+print "Starting scan on netmask  -> $netmask\n";
+
+
+
+print "\n___COL_______HOST_________STATE____BOOL__\n";
+for my $ip_address ($netmask->enumerate)
+{
+  my $parent = fork();
+  unless ($parent)
+  {
+    # do this here to keep the msg sequence at 1 for each host pinged
+    my $sender  = Net::Ping->new(shift || 'tcp', shift || 5);
+    if ($sender->ping($ip_address))
+    {
+      if ($sender->{proto} eq 'syn')
+      {
+        # wait for ACK response or timeout
+        exit 0 unless $sender->ack($ip_address);
+      }
+      print "Address -> $ip_address \t| Alive | TRUE  |\n";
+    }
+    exit 0;
+  }
+}
+# wait on forked processes to finish
+until (waitpid(-1, WNOHANG) == -1) {};
+print "-----------------------------------------\n";
+print "Exiting\n";
+```
+
+So first things first is we state or call the enumerate function from `Net::NetMask` to enumerate every possible IP address within the range we were given hence the 
+
+```pl
+$netmask->enumerate
+```
+
+and declares the output of that `$ip_address`, now under the for loop we call perls base function `fork()` to create a new process for every ping, when we run the fork we call 
+
+```pl
+my $sender = Net::Ping->new(shift || 'tcp', shift || 5);
+```
+
+to create the main ping function for the hosts, first thing you will notice is we use shift twice in this statement, one which has || tcp the next which has || 5 , this means that we will shift another one column to the right ( after shifting 1 already for the target CIDR range ), to activate the method, if there is no method defined we will make that method || 'tcp' then we shift another mark over to the timeout `NeT::Ping` takes 2 arguments here the method and the timeout which the second argument will be shift for the third time aka our timeout so when we run the script as an example
+
+`sudo perl main.pl 10.0.0.1/24 icmp        3`
+                   `| F Shift   |S shift    | T Shift `
+                   
+ Where F shift is the first shift we make, S Shift is the second shift, and T shift which is the final and third shift we make in the code 
+ 
+ then we move onto calling the if sender statements 
+ 
+```pl
+if ($sender->ping($ip_address))
+    {
+      if ($sender->{proto} eq 'syn')
+      {
+        # wait for ACK response or timeout
+        exit 0 unless $sender->ack($ip_address);
+      }
+      print "Address -> $ip_address \t| Alive | TRUE  |\n";
+    }
+    exit 0;
+```
+
+if the sender creates a ping request to the IP address and the sender protocal which is 
+
+```pl
+if ($sender->{proto} eq 'syn')
+```
+
+happens and becomes true ( this is our second shift argument taking place, if the sender had included something or an argument of syn then it will branch off into its own statement) then the function will wait for the sender to recieve and ACK or acknowledgment from the address which means the address or deivce with this address is alive and up. unless that `$sender` recieves an `acknowledgment` back from the host address it will exit which is the use case of unless in perl 
+
+```pl
+        exit 0 unless $sender->ack($ip_address);
+```
+
+if it does not equal syn it will pass and move onto the normal method or method you used and output the addresses in a column 
+
+```pl
+      print "Address -> $ip_address \t| Alive | TRUE  |\n";
+```
+
+once outside of the body of that function we use the WNOHANG function which waits for the PID to finish or the forked process and then we call exit 
+
+```pl
+until (waitpid(-1, WNOHANG) == -1) {};
+print "-----------------------------------------\n";
+print "Exiting\n";
+```
+
+The until statement will wait for the `waitpid` function to finish, it it does not finish it will not print the bottom to the table and the exit message, when the fork() subroutine is finished it will then exit. our full code now looks like the following 
+
+```pl
+#!/usr/bin/env perl
+
+=head1 DOCUMENTATION 
+  ping.pl <CIDR> method timeout
+
+Methods:
+  icmp, udp, tcp, syn
+
+Examples:
+  sudo perl ping.pl 10.0.0.1/24 icmp 10
+  sudo perl ping.pl 10.0.0.0/24 tcp  3
+=cut
+
+
+use strict;
+use warnings;
+use Net::Ping;
+use Net::Netmask;
+use POSIX 'WNOHANG';
+
+die "Usage:\n\tsudo perl $0.pl CIDR, method, \n" unless @ARGV;
+my $netmask = Net::Netmask->new2(shift) or die Net::Netmask::errstr;
+
+print "Starting scan on netmask  -> $netmask\n";
+
+
+
+print "\n___COL_______HOST_________STATE____BOOL__\n";
+for my $ip_address ($netmask->enumerate)
+{
+  my $parent = fork();
+  unless ($parent)
+  {
+    # do this here to keep the msg sequence at 1 for each host pinged
+    my $sender  = Net::Ping->new(shift || 'tcp', shift || 5);
+    if ($sender->ping($ip_address))
+    {
+      if ($sender->{proto} eq 'syn')
+      {
+        # wait for ACK response or timeout
+        exit 0 unless $sender->ack($ip_address);
+      }
+      print "Address -> $ip_address \t| Alive | TRUE  |\n";
+    }
+    exit 0;
+  }
+}
+# wait on forked processes to finish
+until (waitpid(-1, WNOHANG) == -1) {};
+print "-----------------------------------------\n";
+print "Exiting\n";
+
+```
