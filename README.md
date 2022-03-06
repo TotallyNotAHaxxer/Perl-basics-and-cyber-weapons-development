@@ -1314,3 +1314,24 @@ print "-----------------------------------------\n";
 print "Exiting\n";
 
 ```
+
+once we execute our program 
+
+`sudo perl ping.pl 10.0.0.1/24 icmp 5`
+
+we get something like 
+
+```pl
+___COL_______HOST_________STATE____BOOL__
+Address -> 10.0.0.17    | Alive | TRUE  |
+Address -> 10.0.0.16    | Alive | TRUE  |
+Address -> 10.0.0.18    | Alive | TRUE  |
+Address -> 10.0.0.20    | Alive | TRUE  |
+Address -> 10.0.0.8     | Alive | TRUE  |
+Address -> 10.0.0.113   | Alive | TRUE  |
+Address -> 10.0.0.120   | Alive | TRUE  |
+Address -> 10.0.0.207   | Alive | TRUE  |
+Address -> 10.0.0.213   | Alive | TRUE  |
+-----------------------------------------
+Exiting
+```
