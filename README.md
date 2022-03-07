@@ -1346,5 +1346,130 @@ we have now sucessfully built a live host scanner, now in the next section we wi
 
 So as said above at the end of the last section i said this section was going to be about `taking programs or small programs to a whole new level` well this is what we are going to do. When i have started my journey to finding what programming language fit me, i went through a very large up and down road with languages like Ruby, Perl, Fortran, Go, C, and many more above that. But I never just followed documentation or went along basic youtube videos, what i would do is buy or read a book about the language on the topic i was learning, an example was `grey hat c` and on that path i learned taking peoples scripts and rewritting them in the language i was studying in was the best, that and advancing other peoples scripts 
 
-this section will talk about porting other scripts into perl, an example will be a ruby script i made and advance that and also rewrite it in perl. Then we will work on improoving the host pinger up top 
+this section will talk about porting other scripts into perl, an example will be a ruby script i made and advance that and also rewrite it in perl. Then we will work on improoving the host pinger up top.
 
+So in this repo https://github.com/ArkAngeL43/Humble-Ruby/blob/main/main.rb, i have a script i rewrote in ruby, the script was named humble the HTTP analyzer written in python, so when i was learning ruby i decided to rewrite this tool in ruby from python, below is a snippet of the code, we will recreate this in perl and improove it by alot
+
+
+```rb
+require 'socket'
+require 'net/http'
+require 'colorize'
+require 'tty-spinner'
+require 'optparse'
+require 'httparty'
+require 'timeout'
+require 'uri'
+
+
+system("clear")
+sleep 1 
+
+url     = ARGV[0] || "".empty?
+domain  = ARGV[1] || "".empty?
+
+N = `host #{domain}`.match(/(\d{1,3}\.){3}\d{1,3}/).to_s
+
+URI.parse("#{url}").port # => 80
+uri = URI.parse("#{url}")
+
+
+
+if ARGV[1].nil?
+    puts <<-'EOF'.colorize(:blue)
+    ______ _     _ ______  _______     _______ _______ _______  ______
+    |_____/ |     | |_____] |______ ___ |______    |    |______ |_____/
+    |    \_ |_____| |_____] |______     ______|    |    |______ |    \_ 
+    V 2.0                https://github.com/ArkAngeL43    Rube-Ster
+                    Designed, and programmed by Scare_Sec hackers
+    -------------------------------------------------------------------
+    EOF
+    puts '[-] No Argument'.colorize(:red)
+    sleep 1 
+    puts "[-] Try #{__FILE__} https://github.com www.github.com".colorize(:yellow)
+    puts "[-] I Need a second link for the WWW in order to ping the IP Server ".colorize(:yellow)
+    puts "[+] Try ".colorize(:yellow)
+    puts "[+] ruby #{__FILE__} https://google.com www.google.com".colorize(:yellow)
+    sleep 3 
+    puts '[-] Exiting'.colorize(:red)
+    exit!
+    
+
+
+end
+if ARGV.empty?
+    puts <<-'EOF'.colorize(:blue)
+    ______ _     _ ______  _______     _______ _______ _______  ______
+    |_____/ |     | |_____] |______ ___ |______    |    |______ |_____/
+    |    \_ |_____| |_____] |______     ______|    |    |______ |    \_ 
+    V 2.0                https://github.com/ArkAngeL43    Rube-Ster
+                    Designed, and programmed by Scare_Sec hackers
+    -------------------------------------------------------------------
+    EOF
+    puts '[-] No Argument'.colorize(:red)
+    sleep 1 
+    puts "[-] Try #{__FILE__} https://github.com www.github.com".colorize(:blue)
+    puts '[-] Exiting'.colorize(:red)
+    exit!
+end
+
+def banner_help()
+    puts <<-'EOF'.colorize(:red)
+    ______ _     _ ______  _______     _______ _______ _______  ______
+    |_____/ |     | |_____] |______ ___ |______    |    |______ |_____/
+    |    \_ |_____| |_____] |______     ______|    |    |______ |    \_ 
+    V 2.0                https://github.com/ArkAngeL43    Rube-Ster
+                    Designed, and programmed by Scare_Sec hackers
+    -------------------------------------------------------------------
+    EOF
+end
+
+banner_help()
+
+date = Time.new 
+puts  '         Date At Start ===> '.colorize(:yellow) + date.inspect .colorize(:red)
+puts  '         Url Target    ===> '.colorize(:yellow) + url    .colorize(:red)
+puts  '         WWW Target    ===> '.colorize(:yellow) + domain .colorize(:red)
+puts '-------------------------------------------------------'
+puts "[*] Target is => ".colorize(:blue) + url.colorize(:red)
+puts '-------------------------------------------------------'  
+sleep 1 
+puts '[*] Gathering Info on URL => '.colorize(:blue) + url.colorize(:red)
+sleep 3 
+resur = Net::HTTP.get_response(URI.parse(url.to_s))
+
+
+
+
+if resur.code == '200'
+    puts '[+] Connection OK' 
+elsif resur.code == '301'
+    puts '[+] good'
+elsif resur.code == '302'
+    puts '[+] Domain not found'
+elsif resur.code == '202'
+    puts '[+] Domain Accepted IPA'
+elsif resur.code == '201'
+    puts '[+] Domain Created'
+elsif resur.code == '204'
+    puts '[-] hmmm not much content here'
+elsif resur.code == '206'
+    puts '[-] little content, but why?.....'
+elsif resur.code == '303'
+    puts '[-] See another page'
+elsif resur.code == '304'
+```
+
+This is some really well begginer built code, which is why it is not structured well however we can recreate this if not better in perl.
+
+The things to improove
+
+> Banner, when the arguments are empty i copy and pasted the print statements three different times which can cause errors and bugs in the script or be too CPU heavy, so this will be our first priotiry fixing
+
+> The elseif statements constantly, at the end of the code i have a major list of status codes which once detected as a status code say what the response is, this is bad, considering the amount of elseif statements there are it can make the script slower and more CPU heavy which is not wanted in a program 
+
+> Sleep statements. here i used sleep statements which arent good if you are looking for a speedy script 
+
+> The use of color libraries, so this can be a bit of an issue, color libraries while nice are not important when you can use simple color codes to direct output.
+
+> system statements: system statemnts are not that good to use in cross platform scripts unless you have a function to detect the OS, when i was rewriting this tool i was on linux ( still am today ) so i used `system("clear")` which is easily replaceable with a clear string
