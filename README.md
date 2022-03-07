@@ -1340,3 +1340,11 @@ to see this payload is actually working we can use wireshark to analyze this
 
 ![warning](usage.png)
 
+we have now sucessfully built a live host scanner, now in the next section we will be talking about how to take programs like those to the next level
+
+# Advancing and manipulating perl scripts to do more 
+
+So as said above at the end of the last section i said this section was going to be about `taking programs or small programs to a whole new level` well this is what we are going to do. When i have started my journey to finding what programming language fit me, i went through a very large up and down road with languages like Ruby, Perl, Fortran, Go, C, and many more above that. But I never just followed documentation or went along basic youtube videos, what i would do is buy or read a book about the language on the topic i was learning, an example was `grey hat c` and on that path i learned taking peoples scripts and rewritting them in the language i was studying in was the best, that and advancing other peoples scripts 
+
+this section will talk about porting other scripts into perl, an example will be a ruby script i made and advance that and also rewrite it in perl. Then we will work on improoving the host pinger up top 
+
