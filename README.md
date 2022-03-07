@@ -1661,3 +1661,188 @@ sub main {
 
 main;
 ```
+
+now what this script does is use the LWP simple perl module to make a get request to the website, and then passes it onto the DNS query which will try to get the name servers, this script takes 2 arguments a website and a domain name so for the output example we will be using github
+
+```pl
+perl humble-rewrite.pl https://www.github.co./ArkAngeL43 github.com
+```
+
+which will give the following output 
+
+```
+
+                             _______                  __     __               ______              __ 
+                            |   |   |.--.--.--------.|  |--.|  |.-----.______|   __ \.-----.----.|  |
+                            |       ||  |  |        ||  _  ||  ||  -__|______|    __/|  -__|   _||  |
+                            |___|___||_____|__|__|__||_____||__||_____|      |___|   |_____|__|  |__|
+                                       The http analyzer rewritten and ported into Perl5 
+-----------------------------
+Headers that have been returned and collected: Content-Type
+: Client-Date
+: Client-Warning
+With values:
+	___________ID__________Header Value______________Header Data________________
+	|         Header        |Content-Type               text/plain
+	|         Header        |Client-Date               Mon, 07 Mar 2022 16:51:37 GMT
+	|         Header        |Client-Warning               Internal response
+__Count________Name Server____________
+1      | ns-421.awsdns-52.com	     
+2      | ns-520.awsdns-01.net	     
+3      | dns1.p08.nsone.net	     
+4      | dns2.p08.nsone.net	     
+5      | dns3.p08.nsone.net	     
+6      | dns4.p08.nsone.net	     
+7      | ns-1283.awsdns-32.org	     
+8      | ns-1707.awsdns-21.co.uk
+```
+
+if we wanted we can try more complex websites like githubs main website instead of co
+
+```
+
+                             _______                  __     __               ______              __ 
+                            |   |   |.--.--.--------.|  |--.|  |.-----.______|   __ \.-----.----.|  |
+                            |       ||  |  |        ||  _  ||  ||  -__|______|    __/|  -__|   _||  |
+                            |___|___||_____|__|__|__||_____||__||_____|      |___|   |_____|__|  |__|
+                                       The http analyzer rewritten and ported into Perl5 
+-----------------------------
+Headers that have been returned and collected: Cache-Control
+: Connection
+: Date
+: Accept-Ranges
+: ETag
+: Server
+: Vary
+: Content-Language
+: Content-Type
+: Client-Date
+: Client-Peer
+: Client-Response-Num
+: Client-SSL-Cert-Issuer
+: Client-SSL-Cert-Subject
+: Client-SSL-Cipher
+: Client-SSL-Socket-Class
+: Client-SSL-Version
+: Client-Transfer-Encoding
+: Content-Security-Policy
+: Expect-CT
+: Link
+: Permissions-Policy
+: Referrer-Policy
+: Set-Cookie
+: Strict-Transport-Security
+: Title
+: X-Content-Type-Options
+: X-Frame-Options
+: X-GitHub-Request-Id
+: X-Meta-Apple-Itunes-App
+: X-Meta-Browser-Errors-Url
+: X-Meta-Browser-Optimizely-Client-Errors-Url
+: X-Meta-Browser-Stats-Url
+: X-Meta-Charset
+: X-Meta-Description
+: X-Meta-Enabled-Features
+: X-Meta-Expected-Hostname
+: X-Meta-Github-Keyboard-Shortcuts
+: X-Meta-Google-Site-Verification
+: X-Meta-Homepage-Version-Ga-Dimension
+: X-Meta-Hostname
+: X-Meta-Html-Safe-Nonce
+: X-Meta-Octolytics-Url
+: X-Meta-Page-Subject
+: X-Meta-Request-Id
+: X-Meta-Selected-Link
+: X-Meta-Theme-Color
+: X-Meta-Twitter-Card
+: X-Meta-Twitter-Description
+: X-Meta-Twitter-Image-Src
+: X-Meta-Twitter-Site
+: X-Meta-Twitter-Title
+: X-Meta-User-Login
+: X-Meta-Viewport
+: X-Meta-Visitor-Hmac
+: X-Meta-Visitor-Payload
+: X-Pjax-Csp-Version
+: X-Pjax-Css-Version
+: X-Pjax-Js-Version
+: X-Pjax-Version
+: X-XSS-Protection
+With values:
+	___________ID__________Header Value______________Header Data________________
+	|         Header        |Cache-Control               max-age=0, private, must-revalidate
+	|         Header        |Connection               close
+	|         Header        |Date               Mon, 07 Mar 2022 04:51:59 GMT
+	|         Header        |Accept-Ranges               bytes
+	|         Header        |ETag               W/"f4c130b3d32a61a81c202a344970c496"
+	|         Header        |Server               GitHub.com
+	|         Header        |Vary               X-PJAX, X-PJAX-Container, Accept-Language, Accept-Encoding, Accept, X-Requested-With
+	|         Header        |Content-Language               en-US
+	|         Header        |Content-Type               text/html; charset=utf-8
+	|         Header        |Client-Date               Mon, 07 Mar 2022 16:52:22 GMT
+	|         Header        |Client-Peer               140.82.112.4:443
+	|         Header        |Client-Response-Num               1
+	|         Header        |Client-SSL-Cert-Issuer               /C=US/O=DigiCert, Inc./CN=DigiCert High Assurance TLS Hybrid ECC SHA256 2020 CA1
+	|         Header        |Client-SSL-Cert-Subject               /C=US/ST=California/L=San Francisco/O=GitHub, Inc./CN=github.com
+	|         Header        |Client-SSL-Cipher               TLS_AES_128_GCM_SHA256
+	|         Header        |Client-SSL-Socket-Class               IO::Socket::SSL
+	|         Header        |Client-SSL-Version               TLSv1_3
+	|         Header        |Client-Transfer-Encoding               chunked
+	|         Header        |Content-Security-Policy               default-src 'none'; base-uri 'self'; block-all-mixed-content; child-src github.com/assets-cdn/worker/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com objects-origin.githubusercontent.com www.githubstatus.com collector.githubapp.com collector.github.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com cdn.optimizely.com logx.optimizely.com/v1/events translator.github.com wss://alive.github.com github.githubassets.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src render.githubusercontent.com viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: github.githubassets.com identicons.github.com collector.githubapp.com collector.github.com github-cloud.s3.amazonaws.com secured-user-images.githubusercontent.com/ *.githubusercontent.com customer-stories-feed.github.com spotlights-feed.github.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com/ github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; worker-src github.com/assets-cdn/worker/ gist.github.com/assets-cdn/worker/
+	|         Header        |Expect-CT               max-age=2592000, report-uri="https://api.github.com/_private/browser/errors"
+	|         Header        |Link               <https://github.githubassets.com>; rel="dns-prefetch"<https://avatars.githubusercontent.com>; rel="dns-prefetch"<https://github-cloud.s3.amazonaws.com>; rel="dns-prefetch"<https://user-images.githubusercontent.com/>; rel="dns-prefetch"<https://github.githubassets.com>; crossorigin="crossorigin"; rel="preconnect"<https://avatars.githubusercontent.com>; rel="preconnect"<https://github.githubassets.com/assets/light-d77910e89a0e865c400b.css>; crossorigin="anonymous"; integrity="sha512-13kQ6JoOhlxACx6X27kQsASg0FJDIMOdig62C9zdIQGihvqVUYItWNNe0tpO2Q7dppx1xQx/zULU9MQ4Y5Zi/A=="; media="all"; rel="stylesheet"<https://github.githubassets.com/assets/dark-abb557266970539269b4.css>; crossorigin="anonymous"; integrity="sha512-q7VXJmlwU5JptLMrpjBkgwDwAcyytmc+xYAWW2xtKLvOGnJUg8O1uIT5ss7VIUYJPaZIe8IGskuy7ASsHlXHZQ=="; media="all"; rel="stylesheet"<https://github.githubassets.com/assets/frameworks-e1d935e60074b976290f.css>; crossorigin="anonymous"; integrity="sha512-4dk15gB0uXYpDwjTMN0+Qau/kysFVwNizg3Z5RKA+naQVQpZMqVMOueIPFSlPsNi7J3DVEjhXrwDyZT8ZZF8Bg=="; media="all"; rel="stylesheet"<https://github.githubassets.com/assets/behaviors-ded0d7c8e2c71e06a744.css>; crossorigin="anonymous"; integrity="sha512-3tDXyOLHHganRGASNnl2hxGw8qSd6oce8C27uP7cOgAoeazoEkRRiuINi3MNL7Hq/Z/bVBBuNDJscEKLlkgFHg=="; media="all"; rel="stylesheet"<https://github.githubassets.com/assets/tab-size-fix-86922b7f3da95b06bb78.css>; crossorigin="anonymous"; integrity="sha512-hpIrfz2pWwa7eGZ5dC5vHGZ25lJj1iVSVx6xl6yyaGBCYJ5jsX2myq3ToniMuK4eHVL6iw/fKHj++Cg/hdB0JA=="; media="all"; rel="stylesheet"<https://github.githubassets.com/assets/github-4c76441192baa7328758.css>; crossorigin="anonymous"; integrity="sha512-THZEEZK6pzKHWG9MwdLgn9RzpAIvqrRR5kXPWSlYItzJmwM9HsN0EcYWE9t5HPijO1zNY/BnxwJU0v3aVqSwqQ=="; media="all"; rel="stylesheet"<https://github.githubassets.com/assets/site-b2312cc85b40fd1cec1a.css>; crossorigin="anonymous"; integrity="sha512-sjEsyFtA/RzsGnRU/2gAy/XWnTxjV5+Hygm7mU88TDTbY4uj3cdTrnUvkODOH0vQKrdZemWLJzNqbUN/apinrA=="; media="all"; rel="stylesheet"<https://github.githubassets.com/assets/home-0c4acbab7a5a0a69a008.css>; crossorigin="anonymous"; integrity="sha512-DErLq3paCmmgCEBV1010baQTFHlti2OVhXaprG3Lq0+mATZ4aRf2cUeGLhlyeTdRcDz6cXO28WuBmVYXXUWzQQ=="; media="all"; rel="stylesheet"</opensearch.xml>; rel="search"; title="GitHub"; type="application/opensearchdescription+xml"<https://github.com/fluidicon.png>; rel="fluid-icon"; title="GitHub"<https://github.githubassets.com/>; rel="assets"</webgl-globe/data/data.json>; as="fetch"; rel="preload"; type="application/json"<https://github.githubassets.com/static/fonts/alliance/Alliance-No-1-ExtraBold.woff2>; as="font"; crossorigin="crossorigin"; rel="preload"; type="font/woff"<https://github.githubassets.com/static/fonts/alliance/Alliance-No-1-Regular.woff2>; as="font"; crossorigin="crossorigin"; rel="preload"; type="font/woff"<https://github.com/>; data-pjax-transient="data-pjax-transient"; rel="canonical"<https://github.githubassets.com/pinned-octocat.svg>; color="#000000"; rel="mask-icon"<https://github.githubassets.com/favicons/favicon.png>; class="js-site-favicon"; rel="alternate icon"; type="image/png"<https://github.githubassets.com/favicons/favicon.svg>; class="js-site-favicon"; rel="icon"; type="image/svg+xml"</manifest.json>; crossorigin="use-credentials"; rel="manifest"
+	|         Header        |Permissions-Policy               interest-cohort=()
+	|         Header        |Referrer-Policy               origin-when-cross-origin, strict-origin-when-cross-origin
+	|         Header        |Set-Cookie               _gh_sess=yMEsSYRPaT%2Fz8zlBx3A%2B13LhnvDH5VHITJbK1l3ZN1MW0FOXwZi1Ti%2F0asikoQl%2B1fVMs5fC8NjdfdH54XGmWah6uKAll0BTLEptQkBKYU%2F0q4k8V0xYmhsrJlh1Kg99Nr84wnMaK9oRUf3jAhyhc0%2F4dt427o1D96lffraQ83SpFCnaOjoJJKs8HtMzAmaB9Vq8HhP97ZNZrG5fqtf3XVwZRo%2BVfFDjAMMXOBmPlru5B4XHrYj5YiLhLFzK8SLoOxJLWziDLpVnqEpheVTalA%3D%3D--GXLTWZ9v0l4mu9D8--xgMkscBRcsGjCkzSvj8xIg%3D%3D; Path=/; HttpOnly; Secure; SameSite=Lax_octo=GH1.1.705904173.1646628719; Path=/; Domain=github.com; Expires=Tue, 07 Mar 2023 04:51:59 GMT; Secure; SameSite=Laxlogged_in=no; Path=/; Domain=github.com; Expires=Tue, 07 Mar 2023 04:51:59 GMT; HttpOnly; Secure; SameSite=Lax
+	|         Header        |Strict-Transport-Security               max-age=31536000; includeSubdomains; preload
+	|         Header        |Title               GitHub: Where the world builds software · GitHub
+	|         Header        |X-Content-Type-Options               nosniff
+	|         Header        |X-Frame-Options               deny
+	|         Header        |X-GitHub-Request-Id               C220:5162:E7E6FD:175F4D1:62258F6F
+	|         Header        |X-Meta-Apple-Itunes-App               app-id=1477376905
+	|         Header        |X-Meta-Browser-Errors-Url               https://api.github.com/_private/browser/errors
+	|         Header        |X-Meta-Browser-Optimizely-Client-Errors-Url               https://api.github.com/_private/browser/optimizely_client/errors
+	|         Header        |X-Meta-Browser-Stats-Url               https://api.github.com/_private/browser/stats
+	|         Header        |X-Meta-Charset               utf-8
+	|         Header        |X-Meta-Description               GitHub is where over 73 million developers shape the future of software, together. Contribute to the open source community, manage your Git repositories, review code like a pro, track bugs and features, power your CI/CD and DevOps workflows, and secure code before you commit it.
+	|         Header        |X-Meta-Enabled-Features               MARKETPLACE_PENDING_INSTALLATIONS
+	|         Header        |X-Meta-Expected-Hostname               github.com
+	|         Header        |X-Meta-Github-Keyboard-Shortcuts               dashboards
+	|         Header        |X-Meta-Google-Site-Verification               c1kuD-K2HIVF635lypcsWPoD4kilo5-jA_wBFyT4uMYKT5gs8h0wvaagLKAVWq8bbeNwnZZK1r1XQysX3xurLUZzhVyEFwb7w3e0-uOTltm8Jsck2F5StVihD0exw2fsAGXs5KoUUkNCoaAZn7wPN-t01Pywp9M3sEjnt_3_ZWPc
+	|         Header        |X-Meta-Homepage-Version-Ga-Dimension               dimension11
+	|         Header        |X-Meta-Hostname               github.com
+	|         Header        |X-Meta-Html-Safe-Nonce               38e40ffcc03b7e52912152d1bd9a70bd1daf93fa0781efc54115d061b5fc9cc8
+	|         Header        |X-Meta-Octolytics-Url               https://collector.github.com/github/collect
+	|         Header        |X-Meta-Page-Subject               GitHub
+	|         Header        |X-Meta-Request-Id               C220:5162:E7E6FD:175F4D1:62258F6F
+	|         Header        |X-Meta-Selected-Link               
+	|         Header        |X-Meta-Theme-Color               #1e2327
+	|         Header        |X-Meta-Twitter-Card               summary_large_image
+	|         Header        |X-Meta-Twitter-Description               GitHub is where over 73 million developers shape the future of software, together. Contribute to the open source community, manage your Git repositories, review code like a pro, track bugs and feat...
+	|         Header        |X-Meta-Twitter-Image-Src               https://github.githubassets.com/images/modules/site/social-cards/github-social.png
+	|         Header        |X-Meta-Twitter-Site               @github
+	|         Header        |X-Meta-Twitter-Title               GitHub: Where the world builds software
+	|         Header        |X-Meta-User-Login               
+	|         Header        |X-Meta-Viewport               width=device-width
+	|         Header        |X-Meta-Visitor-Hmac               868f44925faba28e6d633c4690fff58ea8a12dbc2ab4a9b38cf9e73d156b9366
+	|         Header        |X-Meta-Visitor-Payload               eyJyZWZlcnJlciI6IiIsInJlcXVlc3RfaWQiOiJDMjIwOjUxNjI6RTdFNkZEOjE3NUY0RDE6NjIyNThGNkYiLCJ2aXNpdG9yX2lkIjoiMzAzMTgzNTMzODc5MTU1NDkyNyIsInJlZ2lvbl9lZGdlIjoiaWFkIiwicmVnaW9uX3JlbmRlciI6ImlhZCJ9
+	|         Header        |X-Pjax-Csp-Version               171c399055fc87a910ea59c8b4f1b8937b10a0d2cad840610066be36532aed28
+	|         Header        |X-Pjax-Css-Version               e224955b823508470a6c6c80d8afaaf3c1269d6fb7c29177853a4d0fefc6daf1
+	|         Header        |X-Pjax-Js-Version               6dba63096bacb00477f407d1a13cdd5f63bb8f265f8742aa42dfe5b6971d0a69
+	|         Header        |X-Pjax-Version               8e979ff3f50821f0e6c70dc316a693f01bc57b2c35280bf407b885e4e1d05ee9
+	|         Header        |X-XSS-Protection               0
+__Count________Name Server____________
+1      | d.root-servers.net	     
+2      | h.root-servers.net	     
+3      | e.root-servers.net	     
+4      | l.root-servers.net	     
+5      | b.root-servers.net	     
+6      | g.root-servers.net	     
+7      | k.root-servers.net	     
+8      | c.root-servers.net	     
+9      | m.root-servers.net	     
+10      | i.root-servers.net	     
+11      | f.root-servers.net	     
+12      | a.root-servers.net	     
+13      | j.root-servers.net
+```
