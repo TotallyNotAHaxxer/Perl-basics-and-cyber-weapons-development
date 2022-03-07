@@ -1473,3 +1473,191 @@ The things to improove
 > The use of color libraries, so this can be a bit of an issue, color libraries while nice are not important when you can use simple color codes to direct output.
 
 > system statements: system statemnts are not that good to use in cross platform scripts unless you have a function to detect the OS, when i was rewriting this tool i was on linux ( still am today ) so i used `system("clear")` which is easily replaceable with a clear string
+
+
+So because this is a rewrite we will be doing alot more, such as writing and making more use of regex, implimenting subroutines more, using more libraries and whatnot to get more out of our script
+
+<h4> Implimenting Arguments into subroutines </h4>
+
+So implimenting names and function names or arguments into subroutines is WAY WAY different from most languages, in perl there is no way you input a name or value into a subroutine in fact you use arrays
+
+When we use @ it initializes an array in perl like 
+
+```pl
+my @urls (
+  "https://www.example.com",
+);
+```
+
+however we can use this with _ to pass a parameter list to a function or subroutine which in our case would be called like this 
+
+```pl
+sub func
+
+func("val1", "val2"... etc etc etc)
+```
+
+now it has a common usage and is easy to understand when you want to push arguments into a function, so to start off our http rewrite we will obviosuly declare the libs and make the header first ( i think you know how to structure a program by now ), we will make a function called banner which takes a banner file as a input or array function value 
+
+```pl
+use warnings;
+use strict;
+use LWP::UserAgent;
+use Socket;
+
+sub banner {
+    my $total_args = scalar(@_);
+    open(BN, "<", @_);
+    while (<BN>) {
+        print $_;
+    }
+    close(BN);
+    print "Arguments passed $total_args";
+}
+
+banner("banner.txt");
+```
+
+Now lets look at the function, first we have `my total args = scalar()` scalar is basically like a total of an array, if you want to get the total values of an array you use the scalar name with the array name or initalization
+
+then we move on with basic file routines to open, accept instead of "filename" we use the @_ argument which can help us just call a file from the function, if or when we use this we will be able to call the subroutine as
+
+```pl
+banner("banner.txt");
+```
+
+which will output the contents of the banner file and the value or argument we used.
+
+now that we understand the basics of an array lets make a constants caller which outputs the arguments of the user, and calls the banner function along with a clear statement, so what i learned a while back is instead of using system commands to clear a terminal we can use this function below to clear the screen 
+
+```pl
+sub clear {
+    print(@_);
+}
+
+sub main {
+    clear("\x1b[H\x1b[2J\x1b[3J");
+}
+
+main;
+```
+
+now i know i skipped some things however here is the header of the file
+
+```pl
+use warnings;
+use strict;
+use LWP::UserAgent;
+use Socket;
+
+
+my $url          = shift;
+my $domain       = shift;
+my $banner       = "banner.txt";
+my $hex_value    = "\x1b[H\x1b[2J\x1b[3J";
+
+
+sub banner {
+    # the @_ is an array, the array is how much arguments we passed in perl you do not need to define name string, age int, etc etc or even pass values, since perl automates this through an array
+    my $total_args = scalar(@_);
+    open(BN, "<", @_);
+    while (<BN>) {
+        print $_;
+    }
+    close(BN);
+}
+
+sub clear {
+    print(@_);
+}
+
+sub main {
+    clear("\x1b[H\x1b[2J\x1b[3J");
+    banner("banner.txt");
+}
+
+main;
+```
+
+its quite simple to understand the clear subroutine follows the same concept as the banner concept, now that we have our header done and stuff, lets make our main subroutine function this one will be i believe the most simplist function ever and will make this 100+ better than the one uptop in ruby 
+
+```pl
+# make a get request
+sub get {
+    say "Headers that have been returned and collected: ", join("\n\033[31m: ", $res->header_field_names);
+    say "With values:" ;
+    say "\t\033[31m___________ID__________Header Value______________Header Data________________";
+    say "\t\033[31m|         Header        \033[37m|$_               ", $res->header($_) for $res->header_field_names ;
+    # now make the DNS query 
+    print "__Count________Name Server____________\n";
+    foreach my $nameserver ($Dquery->answer) {
+        my $q1 = $i++;
+        print $q1, "      | ", $nameserver->nsdname, "\t     \n";
+    }
+}
+```
+
+once this is done, now is time to finalize the script, i know i did not do the best on key organization here but here is the final script 
+
+```pl
+use warnings;
+use strict;
+use LWP::UserAgent;
+use Socket;
+use v5.12;
+use Net::DNS;
+
+
+
+
+my $url          = shift;
+my $domain       = shift;
+my $banner       = "banner.txt";
+my $hex_value    = "\x1b[H\x1b[2J\x1b[3J";
+my $ua           = new LWP::UserAgent;
+my $res          = $ua->get($url);
+my $Dres         = new Net::DNS::Resolver;
+my $Dquery       = $Dres->query($domain, "NS");
+my $i            = 1;
+
+
+
+sub banner {
+    # the @_ is an array, the array is how much arguments we passed in perl you do not need to define name string, age int, etc etc or even pass values, since perl automates this through an array
+    my $total_args = scalar(@_);
+    open(BN, "<", @_);
+    while (<BN>) {
+        print $_;
+    }
+    close(BN);
+}
+
+sub clear {
+    print(@_);
+}
+
+
+# make a get request
+sub get {
+    say "Headers that have been returned and collected: ", join("\n\033[31m: ", $res->header_field_names);
+    say "With values:" ;
+    say "\t\033[31m___________ID__________Header Value______________Header Data________________";
+    say "\t\033[31m|         Header        \033[37m|$_               ", $res->header($_) for $res->header_field_names ;
+    # now make the DNS query 
+    print "__Count________Name Server____________\n";
+    foreach my $nameserver ($Dquery->answer) {
+        my $q1 = $i++;
+        print $q1, "      | ", $nameserver->nsdname, "\t     \n";
+    }
+}
+
+# where the main function is called
+
+sub main {
+    clear("\x1b[H\x1b[2J\x1b[3J");
+    banner("banner.txt");
+    get;
+}
+
+main;
+```
