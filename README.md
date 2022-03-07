@@ -1887,7 +1887,7 @@ this is all, see what i mean by alot easier? and the resources are limites to ho
 
 The first thing we are going to do when it comes to exploiting web services is attempting to find and exploit with perl
 
-# Exploiting RFI with perl ( attempted )
+# Exploiting LFI with perl ( attempted )
 
 This section will be dedicated to exploiting servers vulnerable to LFI ( Local File Inclusion ), first we need to understand how LFI works and how to scan it and recongnize when a server is exploitable or vulnerable to LFI
 
