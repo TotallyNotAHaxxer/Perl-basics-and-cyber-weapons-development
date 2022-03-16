@@ -1893,7 +1893,7 @@ Perl modules are one of the most useful things you can use especially when build
 
 Perl has a few different file formats which inclue .i, .in, .pod, .pm, .pl, .in.1, .pod.1, .mod.1
 
-The one we will be focussing on will be the .pm which stands for .perlmodule, this is how we will declare our perl module file, now in order to do this you need to declare its package name and the end of the module 
+The one we will be focussing on will be the .pm which stands for .perlmodule, this is how we will declare our perl module file, now in order to do this you need to declare its package name and the end of the module. The end of the module is 1;, the start is when we decalre package name. Our filename is `NetworkRecon.pm`
 
 ```pl
 package NetworkRecon;
@@ -1905,7 +1905,43 @@ sub hello{
 1;
 ```
 
+this is a simple module named NetworkRecon the test subroutine is named as `hello`, now in order to run this file and use it in another file we need to install it and move it to the perl INC paths. Now when we use perl to import that module and the module does not exist we will get the following example error log 
 
+
+```
+Can't locate NetworkRecon.pm in @INC (you may need to install the main module) (@INC contains: /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.32.1 /usr/local/share/perl/5.32.1 /usr/lib/x86_64-linux-gnu/perl5/5.32 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl-base /usr/lib/x86_64-linux-gnu/perl/5.32 /usr/share/perl/5.32 /usr/local/lib/site_perl) at - line 1.
+BEGIN failed--compilation aborted at - line 1.
+```
+
+What is the @INC, the @inc is a perl array which returns the possible paths where modules will be found and searched for, so in order to actually move our file to count it as a module we will need to move it or copy it to one of the following paths
+
+INC paths
+
+```
+/etc/perl 
+/usr/local/lib/x86_64-linux-gnu/perl/5.32.1 
+/usr/local/share/perl/5.32.1 
+/usr/lib/x86_64-linux-gnu/perl5/5.32 
+/usr/share/perl5 
+/usr/lib/x86_64-linux-gnu/perl-base 
+/usr/lib/x86_64-linux-gnu/perl/5.32 
+/usr/share/perl/5.32 
+/usr/local/lib/site_perl
+```
+
+lets move it to perl5 path
+
+```
+sudo cp NetworkRecon.pm -R /usr/share/perl5 
+```
+
+when we use the module in perl again 
+
+```pl
+use NetworkRecon;
+```
+
+we will not recieve an error log, because the perl module file is in there, (Note: When making perl modules, the name is what you will use as a import module an example is if the filename or perl module name is main.pm you will use it as `use main;` and when you call that in the script you will call it with the library or package name )
 
 
 
