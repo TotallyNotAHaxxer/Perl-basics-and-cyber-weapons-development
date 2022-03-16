@@ -1896,7 +1896,7 @@ Perl has a few different file formats which inclue .i, .in, .pod, .pm, .pl, .in.
 The one we will be focussing on will be the .pm which stands for .perlmodule, this is how we will declare our perl module file, now in order to do this you need to declare its package name and the end of the module 
 
 ```pl
-Package NetworkRecon;
+package NetworkRecon;
 
 sub hello{
     print "hello";
