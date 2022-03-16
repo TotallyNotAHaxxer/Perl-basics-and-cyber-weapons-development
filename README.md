@@ -1883,81 +1883,27 @@ when we are done with that we finish off with the DNS resolver which is a standa
     }
 ```
 
-this is all, see what i mean by alot easier? and the resources are limites to how much it will use. Now speaking on web recon lets move twards the web exploitation / web recon
+this is all, see what i mean by alot easier? and the resources are limites to how much it will use. Now speaking on the topic of changing and manipulating scripts, lets build a few scripts and automate them with modules in perl 
 
-The first thing we are going to do when it comes to exploiting web services is attempting to find and exploit with perl
+# Perl modules, and using them to your advantage
 
-# Exploiting LFI with perl ( attempted )
+Perl modules are one of the most useful things you can use especially when building tools. All these perl modules are is just secondary files which are called or imported into the main file to limit the code use or amount of code in the main file. 
 
-This section will be dedicated to exploiting servers vulnerable to LFI ( Local File Inclusion ), first we need to understand how LFI works and how to scan it and recongnize when a server is exploitable or vulnerable to LFI
+> Declaring and starting perl module files
 
-<h5>How the LFI ( Local File Inclusion ) Vulnerability is created</h5>
+Perl has a few different file formats which inclue .i, .in, .pod, .pm, .pl, .in.1, .pod.1, .mod.1
 
-PHP's include() function does not merely include a library as similar functions do in C and other programming languages. It also executes any PHP code in the included file on the server side. As a result, if arbitrary code selected by the attacker can be included, it is possible to perform remote command execution.
+The one we will be focussing on will be the .pm which stands for .perlmodule, this is how we will declare our perl module file, now in order to do this you need to declare its package name and the end of the module 
 
-When a programmer allows a file to be selected for inclusion via any HTTP input, this creates a File Inclusion vulnerability. By providing unexpected inputs that cause sensitive or attacker-controlled files to be included, information can be disclosed and execution can be hijacked.
+```pm
+Package NetworkRecon;
 
-To patch this type of vulnerability, one may employ whitelisting or simply stop allowing user input to specify files for inclusion. There are many prepackaged solutions and techniques to stop file inclusion vulnerabilities, although most of them can be bypassed with enough ingenuity. Where possible, it is better to avoid allowing user input to be directly translated into a file inclusion path.
+sub hello{
+    print "hello";
+}
 
-> Example vulnerable PHP code 
-
-```php
-<?php
-   include($_GET['file']);
-?>
+1;
 ```
-
-> example vulnerable URL path 
-
-` /local.php?file=../../../../../../../../../../../../../etc/passwd`
-
-<h5>Exploiting Local File Inclusion with perl and installing a backdoor / shell </h5>
-
-Because local.php is vulnerable, it will display the registry of vuln.net or the /etc/passwd file in the attacker’s web browser. The first time the attacker sees a URL containing .php?file=, the attacker will most likely attempt a remote file inclusion. If that fails, the attacker will then most likely attempt local file inclusion. Both of these techniques can be used for cross-site scripting attacks.
-
-A null Byte can be used to prevent concatenation in a script. For example, many scripts may append '.php' to a user supplied string in an include. Appending a null Byte (%00) will often short circuit this, allowing an attacker to include any file, regardless of extension.
-If the remote host is a UNIX or Linux based system, the attacker may be able to view `/etc/passwd` or `/proc/cpuinfo` with this technique:
-
-` /local.php?file=../../../../../../../../../../../../../etc/passwd`
-
-Or using null-bytes:
-
-` /local.php?file=../../../../../../../../../../../../../etc/passwd%00`
-
-Because the file is being included, this means that the attacker can see it if it is a text file, or execute any php inside of it.
-
-Code Injection
-Two common input vectors for injecting PHP code are the "user-agent" and the httpd error log. The user-agent can be accessed through /proc/self/environ. Therefore, if an attacker uses tamper-data or a similar tool to cause their browser to send a custom user-agent containing the following string:
-
- ```php
-<?php
-   system($_GET['cmd']);
-?>
-```
- 
-
-and accesses the file:
-
-`/local.php?file=../../../../../../../../../../../../../proc/self/environ?cmd=whoami`
-/proc/self/environ displays the user-agent of the attacker when included. As a result, when it is included the PHP code contained in the attacker's user-agent is executed. meaning that anything supplied to the page via the 'cmd' GET variable will be executed on the server with PHP's system() function, which executes commands at the OS level.
-
-They can retrieve the Linux or Unix username (output of the whoami command) in the return HTML of the PHP file.
-
-The other method is to use the error log - all requests that are denied or that lead to errors are stored in an error log. This means that if we send an illegal request containing some PHP code, the entire request (including the PHP code) will be added to the error log, which can later be included with LFI to execute our code.
-
-For example, one can use telnet command and cause a 404 error with a GET request:
-
- 
- 
-```php 
-GET <?php system($_GET['cmd']) ?> 
-```
-
-And then retrieve the following URL for the same output:
-
-` /local.php?file=../../../../../../../../../../../../../usr/local/apache/log/error_log?cmd=whoami`
-
-Note that log location may vary.
 
 
 
