@@ -1943,5 +1943,72 @@ use NetworkRecon;
 
 we will not recieve an error log, because the perl module file is in there, (Note: When making perl modules, the name is what you will use as a import module an example is if the filename or perl module name is main.pm you will use it as `use main;` and when you call that in the script you will call it with the library or package name )
 
+Now that we have the package included and used inside of the file, we can now look to using the perl module, so we want to call the subroutine hello which prints hello in the terminal, to do this we will make our main.pl file which will look like this 
 
+```pl
+use filename_of_Module;
 
+NetworkRecon::hello();
+
+```
+
+This might seem confusing so im going to go over it again so you get the concept 
+
+the use statement will be the filename, the filename in our case will be main.pm, so we will `use main;`, then we call the library which is labled as `NetworkRecon` with the function 
+
+```pl
+NetworkRecon::hello();
+```
+
+this will output hello in the terminal once main.pl is run. Modules are a great way to make short cuts in your main script, Now what about function arguments. Perl to most people is a wacky language and its kinda true especially when it comes to function arguments, lets make a new module which will take subroutine arguments 
+
+our file is
+
+```pl
+module.pm
+```
+
+our main file which will be ran 
+
+```pl
+main.pl
+```
+
+in the module file we will have the following code which outputs a message that can be called in the main.pl file 
+
+*Module.pm*
+
+```pl
+use strict;
+use warnings;
+
+sub msgout{
+     my $name = shift;
+     print "hello $name";
+}
+```
+
+this is a simple function which is called with arguments using the shift menu, when using shift statements the argument value is returned to 0 based on its location an example is the following 
+
+```pl
+
+my $name = shift;
+my $name2 = shift;
+my $name3 = shift;
+
+sub hello{
+    my $name4 = shift;
+}
+
+hello("$name3")
+```
+
+This might be confusing to a new perl programmer however its easy to understand 
+
+when shifting outside of function bodies those will commonly act as command line arguments, which name - name3 will act as 3 command line arguments, then we shift under the hello statement which acts as its own argument to that function, since no other class, module, or subroutine can see it, it becomes private and puts the argument array back to 0 until another shift statement is declared, because we used `my $name = shift;` then we set the argument dimension to 1.
+
+`Dimension -> The amount of arguments an array in a function can take and hold`
+
+`ARGV      -> Argument Vectors, which is basically a variable that contains the arguments passed to a program through the command line.`
+
+`Shift     -> Sets the arrays dimension, or command line argument vector (ARGV)`
