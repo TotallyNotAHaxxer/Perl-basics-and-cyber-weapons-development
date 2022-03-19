@@ -2189,3 +2189,23 @@ sub getrecord{
     close (RECORDS);
 }
 ```
+
+We named our function getrecord, and under that we imediately start a while loop, this while loop which sets if column count is less than colnum, then make then parse the URL, Now this seems hard to understand but its not, we use a few methods here 
+
+my       -> To declare the URL
+$url     -> declare its name
+http://  -> To specify the url and host will be http
+.$host.  -> To join the variables together
+.@`[]`   -> To add values to the array, this is the columns part and we do the same for rows. 
+.+from+. -> To join and add values to the string or MySQL query
+`+`      -> To add it all together and make a final parse
+
+There is alot that requires but its easy to understand, all it does is parse the URL with the MySQL Query and mash them together and make the request, once done we ask the user agent decleration to make a get request as response to the new parsed URL, then reads the responses content, and if the content is equal to a regex value defined here 
+
+```pl
+       if($content =~ m/value(.*)to/) {
+
+# regex called when m/ / is called
+```
+
+once it is it opens the filename, prints the records, and exits now if we run this on a vulnerable query and website we will have retrieved the MSQL query. This might not be the most ideal script to use for enumerating databases, however it gives you general direction as to where to go and how you can advance this. This doc is supposed to teach you how to not only manipulate scripts but also build on your own frameworks
