@@ -114,6 +114,12 @@ if you want to push multiple values you must have a () encapsulating the variabl
 
 <h5> Mathematical </h5>
 
+|      | 4x         | +8   |
+| ---- | ---------- | ---- |
+| 5x   | 20x^2      | +40x |
+| -2   | -8x        | -16  |
+
+
 |    Operator   | Description of its usage and what it does                                                                           |
 | ------------- | ------------------------------------------------------------------------------------------------------------------- |
 |      =        | Assigns a variable to a value                                                                                       |
